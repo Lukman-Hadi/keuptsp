@@ -1,6 +1,3 @@
-<style>
-    td {white-space: normal !important;};
-</style>
 <div class="header bg-primary pb-6">
 	<div class="container-fluid">
 		<div class="header-body">
@@ -8,7 +5,7 @@
 				<div class="col-lg-6 col-7">
 					<h6 class="h2 text-white d-inline-block mb-0"><?= $title ?></h6>
 				</div>
-				<div class="col-lg-6 col-5 text-right">
+				<div id="toolbar" class="col-lg-12 col-12 text-right col-sm-6">
 					<button type="button" class="btn btn-md btn-neutral" onclick="newForm()">Entry Baru</button>
 					<button type="button" class="btn btn-md btn-danger" onclick="destroy()">Hapus Data</button>
 					<button type="button" class="btn btn-md btn-warning" onclick="editForm()">Edit Data</button>
@@ -26,16 +23,16 @@
 			<div class="card">
 				<!-- Card header -->
 				<div class="card-header">
-					<h3 class="mb-0">List Program</h3>
+					<h3 class="mb-0"><?= $subtitle ?></h3>
 					<p class="text-sm mb-0">
-						This is an exmaple of datatable using the well known datatables.net plugin. This is a minimal setup in order to get started fast.
+						<?= $description ?>
 					</p>
 				</div>
 
 				<div class="table-responsive py-2 px-4">
 					<table id="table"
 						   data-toggle="table"
-						   data-url="program/getData"
+						   data-url="getdatamenu"
 						   data-pagination="true" 
 						   data-search="true"
 						   data-click-to-select="true"
@@ -43,12 +40,13 @@
 						   data-side-pagination="server">
 						<thead class="thead-light">
 							<tr>
-								<th data-checkbox="true"></th>
-								<th data-field="no" data-formatter="nomerFormatter" data-width="5" data-width-unit="%">No</th>
-								<th data-field="kode_program" data-sortable="true" data-width="25" data-width-unit="%" >Kode Program</th>
-								<th data-field="nama_program" data-width="50" data-width-unit="%" >Nama Program</th>
-								<th data-field="nama_program" data-width="10" data-width-unit="%" data-formatter="formatRupiah">Total Pagu</th>
-								<th data-field="status" data-width="10" data-width-unit="%" data-formatter="statusFormatter">Status</th>
+								<th data-width="2" data-width-unit="%" data-checkbox="true"></th>
+								<th data-field="judul" >Judul Menu</th>
+								<th data-field="link" data-width="10" data-width-unit="%" >Link Menu</th>
+								<th data-field="icon" data-width="10" data-width-unit="%" >Class Icon</th>
+								<th data-field="main" data-sortable="true" data-width="10" data-width-unit="%" >Main Menu</th>
+								<th data-field="status" data-sortable="true" data-width="5" data-width-unit="%" >Status</th>
+								<th data-field="ordinal" data-width="5" data-width-unit="%" >Urutan</th>
 							</tr>
 						</thead>
 					</table>
@@ -63,20 +61,29 @@
 			<div class="modal-body p-0">
 				<div class="card bg-secondary border-0 mb-0">
 					<div class="card-header bg-transparent pb-5">
-						<div class="text-muted text-center mt-2 mb-3">Input Data Program Baru</div>
+						<div class="text-muted text-center mt-2 mb-3">Input Data Menu Baru</div>
 					</div>
 					<div class="card-body px-lg-5 py-lg-2">
 						<form id="ff" method="post" enctype="multipart/form-data" class="needs-validation">
 							<div class="form-group">
-								<label>Kode Program</label>
-								<input type="text" name="kode_program" class="form-control" placeholder="Kode Program" required>
-								<div class="invalid-feedback">
-									Please choose a username.
-								</div>
+								<label>Nama Menu</label>
+								<input type="text" name="judul" class="form-control form-control-sm" placeholder="Judul Menu" required>
 							</div>
 							<div class="form-group">
-								<label>Nama Program</label>
-								<textarea name="nama_program" class="form-control" cols="30" rows="10" required></textarea>
+								<label>Link Menu</label>
+								<input type="text" name="link" class="form-control form-control-sm" placeholder="ex: lorem/dolor/sit" required>
+							</div>
+							<div class="form-group">
+								<label>Icon</label>
+								<input id="icon" type="text" name="icon" class="form-control form-control-sm" placeholder="ex: fas fa-xx" required>
+							</div>
+							<div class="form-group">
+								<label>Main Menu</label>
+								<select id="main_menu" name="id_main" class="form-control select2-single" required><option></option></select>
+							</div>
+							<div class="form-group">
+								<label>Urutan</label>
+								<input type="number" name="ordinal" class="form-control form-control-sm" placeholder="Urutan Menu">
 							</div>
 							<div class="text-center">
 								<button type="submit" class="btn btn-primary my-4">Submit</button>
@@ -88,22 +95,28 @@
 		</div>
 	</div>
 </div>
+
 <script>
-	function nomerFormatter(value, row, i) {
-		return i+1;
-	}
-	function formatRupiah(val, row){
-		console.log('row', row)
-		if(row.total){
-			let num = 'Rp ' + (row.total).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1.");
-			return num;
-		}else{
-			return '-'
-		}
-	}
-	function statusFormatter(val,r){
-		return r.status==1?'<span class="badge badge-pill badge-success">Active</span>':'<span class="badge badge-pill badge-danger">Innactive</span>'
-	}
+	$(document).ready(function(){
+		$.fn.select2.defaults.set( "theme", "bootstrap" );
+		$.ajax({
+			url: 'ismainmenu',
+			type: 'get',
+			dataType: 'json',
+			success: function (data){
+				let res = data.map((d)=>{
+					return {id:d._id,text:d.judul}
+				})
+				$('#main_menu').select2({
+					placeholder: "Pilih Main Menu",
+					allowClear: false,
+					data: res
+				});
+			}
+		})
+        // $('#table').bootstrapTable();
+        // $('#pagu').mask('000.000.000.000.000', {reverse: true});
+	})
 	function destroy(){
 		let row = $("#table").bootstrapTable('getSelections');
 		if(row){
@@ -118,7 +131,7 @@
 				if (result.value) {
 					let data = row.map(r=>r._id);
 					console.log('data', data)
-					$.post('program/delete',{id:data},function(result){
+					$.post('destroymenu',{id:data},function(result){
 						if (result.errorMsg){
 							Toast.fire({
 							type: 'error',
@@ -148,7 +161,7 @@
 				confirmButtonText: 'Yes'
 				}).then((result) => {
 				if (result.value) {
-					$.post('program/aktif',{id:row._id},function(result){
+					$.post('aktifmenu',{id:row._id},function(result){
 						if (result.errorMsg){
 							Toast.fire({
 							type: 'error',
@@ -171,19 +184,21 @@
 		console.log('row', row)
 		if (row){
 			$('#modal-form').modal('toggle');
-			$('input[name=kode_program]').val(row.kode_program);
+			$('input[name=judul]').val(row.judul);
+			$('input[name=link]').val(row.link);
+			$('input[name=icon]').val(row.icon);
 			$('textarea[name=nama_program]').val(row.nama_program);
-			url = 'program/update?id='+row._id;
+			url = 'updatemenu?id='+row._id;
 		}
 	}
 	function newForm(){
 		$('#modal-form').modal('toggle');
 		$('#ff').trigger("reset");
-		url = 'program/save';
+		url = 'savemenu';
 	}
 	$('#ff').on('submit', function (e) {
-	e.preventDefault();
-	const string = $('#ff').serialize();
+		e.preventDefault();
+		const string = $('#ff').serialize();
 		$.ajax({
 			type: "POST",
 			url: url,

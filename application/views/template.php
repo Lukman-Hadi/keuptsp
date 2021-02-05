@@ -49,9 +49,6 @@
   <script src="<?= base_url() ?>/assets/admin/vendor/js-cookie/js.cookie.js"></script>
   <script src="<?= base_url() ?>/assets/admin/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
   <script src="<?= base_url() ?>/assets/admin/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-  <style>
-    td {white-space: normal !important;};
-  </style>
 </head>
 
 <body>

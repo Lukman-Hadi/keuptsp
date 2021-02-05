@@ -32,7 +32,7 @@
 				<div class="table-responsive py-2 px-4">
 					<table id="table"
 						   data-toggle="table"
-						   data-url="jabatan/getData"
+						   data-url="<?= $link ?>"
 						   data-pagination="true"
 						   data-search="true"
 						   data-click-to-select="true"

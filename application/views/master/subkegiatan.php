@@ -1,3 +1,6 @@
+<style>
+    td {white-space: normal !important;};
+</style>
 <div class="header bg-primary pb-6">
 	<div class="container-fluid">
 		<div class="header-body">

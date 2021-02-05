@@ -21,6 +21,36 @@
         <div class="collapse navbar-collapse" id="sidenav-collapse-main">
           <!-- Nav items -->
           <ul class="navbar-nav">
+          <?php 
+            $menu = $this->menu_model->getMenus();
+            foreach($menu->result() as $row):
+              $submenu = $this->menu_model->getSubMenus($row->_id);
+              if($submenu->num_rows()>0){?>
+              <li class="nav-item">
+              <a class="nav-link" href="#<?=$row->link ?>" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="<?=$row->link ?>">
+                <i class="<?= $row->icon;?>"></i>
+                <span class="nav-link-text"><?= $row->judul;?></span>
+              </a>
+              <div class="collapse" id="<?=$row->link ?>">
+                <ul class="nav nav-sm flex-column">
+                <?php foreach ($submenu->result() as $sub) :?>
+                  <li class="nav-item">
+                    <a href="<?= base_url($sub->link) ?>" class="nav-link"><i class="<?= $sub->icon;?>"></i><?= $sub->judul;?></a>
+                  </li>
+                <?php endforeach; ?>
+                </ul>
+              </div>
+              </li>
+              <?php }else{ ?>
+                <li class="nav-item">
+                <a class="nav-link" href="<?= base_url($row->link) ?>">
+                <i class="<?= $row->icon;?>"></i>
+                <span class="nav-link-text"><?= $row->judul;?></span>
+              </a>
+            </li>
+              <?php } endforeach;?>
+            </ul>
+          <!-- <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link" href="<?= base_url() ?>">
                 <i class="ni ni-shop text-primary"></i>
@@ -41,10 +71,10 @@
                     <a href="<?= base_url() ?>kegiatan" class="nav-link">Alur Bisnis</a>
                   </li>
                   <li class="nav-item">
-                    <a href="<?= base_url() ?>subkegiatan" class="nav-link">Sub Kegiatan</a>
+                    <a href="<?= base_url() ?>proses/menu" class="nav-link">Menu</a>
                   </li>
                   <li class="nav-item">
-                    <a href="<?= base_url() ?>rekening" class="nav-link">Rekening Kegiatan</a>
+                    <a href="<?= base_url() ?>rekening" class="nav-link">Hak Akses Menu</a>
                   </li>
                 </ul>
               </div>
@@ -162,7 +192,7 @@
                 <span class="nav-link-text">Calendar</span>
               </a>
             </li>
-          </ul>
+          </ul> -->
           <!-- Divider -->
           <hr class="my-3">
           <!-- Heading -->

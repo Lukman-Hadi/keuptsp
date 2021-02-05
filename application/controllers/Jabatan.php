@@ -11,6 +11,9 @@ class Jabatan extends CI_Controller {
 
 	function index(){
         $data['title']  = 'Data Jabatan';
+        $data['title']  = 'Data Jabatan';
+        $data['title']  = 'Data Jabatan';
+        $data['link']  = 'jabatan/getData';
         $data['collapsed'] = '';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';

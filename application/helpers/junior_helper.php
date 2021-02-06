@@ -31,12 +31,29 @@ function alert($class,$title,$description){
 // untuk chek akses level pada modul peberian akses
 function checked_akses($id_user_level,$id_menu){
     $ci = get_instance();
-    $ci->db->where('user_level',$id_user_level);
-    $ci->db->where('menu_id',$id_menu);
-    $data = $ci->db->get('tbl_userlevel');
+    $ci->db->where('id_jabatan',$id_user_level);
+    $ci->db->where('id_menu',$id_menu);
+    $data = $ci->db->get('tbl_levels');
     if($data->num_rows()>0){
         return "checked='checked'";
     }
+}
+function checked_privilege($idJabatan,$idProgress){
+    $ci = get_instance();
+    $ci->db->where('id_jabatan',$idJabatan);
+    $ci->db->where('id_progress',$idProgress);
+    $data = $ci->db->get('tbl_privilege');
+    if($data->num_rows()>0){
+        return "checked='checked'";
+    }
+}
+function privilegeCheck(){
+    $ci = get_instance();
+    $ci->db->select('nama_progress');
+    $ci->db->from('tbl_privilege p');
+    $ci->db->join('tbl_progress pr','pr._id = p.id_progress');
+    $ci->db->where('p.id_jabatan',$ci->session->userdata('id_jabatan'));
+    return $ci->db->get()->result();
 }
 
 

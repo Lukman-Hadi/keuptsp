@@ -62,4 +62,35 @@ class Proses_model extends CI_Model
         $query=$this->db->get_where('tbl_menus',array('id_main'=>'1'))->result();
         return $query;
     }
+    function getAlur(){
+        $offset = $this->input->get('offset')!=null ? intval($this->input->get('offset')) : 0;
+        $limit = $this->input->get('limit')!=null ? intval($this->input->get('limit')) : 20;
+        $sort = $this->input->get('sort')!=null ? strval($this->input->get('sort')) : 'a.ordinal';
+        $order = $this->input->get('order')!=null ? strval($this->input->get('order')) : 'ASC';
+        $search = $this->input->get('search')!=null ? strval($this->input->get('search')) : '';
+
+        $this->db->select('pg.nama_progress, a.ordinal');
+        $this->db->from('tbl_alur a');
+        $this->db->join('tbl_progress pg','pg._id = a.id_progress','LEFT');
+        if($this->input->get('search')){
+            $this->db->like('pg.nama_progress',$search,'both');
+        }
+        $result['total'] = $this->db->get()->num_rows();
+
+        $this->db->select('pg.nama_progress, a.ordinal');
+        $this->db->from('tbl_alur a');
+        $this->db->join('tbl_progress pg','pg._id = a.id_progress','LEFT');
+        if($this->input->get('search')){
+            $this->db->like('pg.nama_progress',$search,'both');
+        }
+        $this->db->order_by($sort,$order);
+        $this->db->limit($limit,$offset);
+        $query=$this->db->get();
+        $item = $query->result_array();    
+        $result = array_merge($result, ['rows' => $item]);
+        return $result;
+    }
+    function getProgress(){
+        return $this->db->get('tbl_progress');
+    }
 }

@@ -22,9 +22,9 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
           <?php 
-            $menu = $this->menu_model->getMenus();
+            $menu = $this->menu_model->getMenus($this->session->userdata('id_jabatan'));
             foreach($menu->result() as $row):
-              $submenu = $this->menu_model->getSubMenus($row->_id);
+              $submenu = $this->menu_model->getSubMenus($this->session->userdata('id_jabatan'),$row->_id);
               if($submenu->num_rows()>0){?>
               <li class="nav-item">
               <a class="nav-link" href="#<?=$row->link ?>" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="<?=$row->link ?>">

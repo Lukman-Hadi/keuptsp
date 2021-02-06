@@ -11,7 +11,7 @@ class Proses extends CI_Controller {
 
 	function index(){
         $data['title']  = 'DATA PROSES';
-        $data['subtitle']  = 'List Proses Pengajuan';
+        $data['subtitle']  = 'List Proses Aplikasi';
         $data['description']  = 'Data ini digunakan untuk ';
         $data['collapsed'] = '';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
@@ -172,6 +172,7 @@ class Proses extends CI_Controller {
         $data['subtitle']  = 'List Jabatan yang akan diberi akses';
         $data['description']  = 'Data ini digunakan untuk ';
         $data['link']  = base_url().'jabatan/getData';
+        $data['akses']  = true;
         $data['collapsed'] = '';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';
@@ -179,5 +180,92 @@ class Proses extends CI_Controller {
         $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
         $this->template->load('template','master/jabatan',$data);
+    }
+
+    function akses(){
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $data['title'] = 'Geser Untuk Memberikan Akses';
+        $data['level'] = $this->db->get_where('tbl_levels',array('id_jabatan'=> $this->uri->segment(3)))->row_array();
+        $data['menus'] = $this->db->get_where('tbl_menus',array('id_main !='=>null))->result();
+        $this->template->load('template','master/akses',$data);
+    }
+    function approve(){
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $data['title'] = 'Geser Untuk Memberikan Akses';
+        $data['level'] = $this->db->get_where('tbl_levels',array('id_jabatan'=> $this->uri->segment(3)))->row_array();
+        $data['menus'] = $this->db->get('tbl_progress')->result();
+        $this->template->load('template','master/approve',$data);
+    }
+    function aksesMenu(){
+        $id_menu        = $this->input->get('menu_id');
+        $id_jabatan     = $this->input->get('level');
+        // chek data
+        $params = array('id_menu'=>$id_menu,'id_jabatan'=>$id_jabatan);
+        $akses = $this->db->get_where('tbl_levels',$params);
+        if($akses->num_rows()<1){
+            // insert data baru
+            $this->db->insert('tbl_levels',$params);
+        }else{
+            $this->db->where('id_menu',$id_menu);
+            $this->db->where('id_jabatan',$id_jabatan);
+            $this->db->delete('tbl_levels');
+        }
+    }
+    function aksesProgress(){
+        $id             = $this->input->get('progress_id');
+        $id_jabatan     = $this->input->get('level');
+        // chek data
+        $params = array('id_progress'=>$id,'id_jabatan'=>$id_jabatan);
+        $akses = $this->db->get_where('tbl_privilege',$params);
+        if($akses->num_rows()<1){
+            // insert data baru
+            $this->db->insert('tbl_privilege',$params);
+        }else{
+            $this->db->where('id_progress',$id);
+            $this->db->where('id_jabatan',$id_jabatan);
+            $this->db->delete('tbl_privilege');
+        }
+    }
+    function alur(){
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2-bootstrap.css';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
+        $data['title'] = 'Data Alur Proses';
+        $data['subtitle'] = 'Urutan Alur Pengajuan';
+        $data['description'] = 'Hati Hati Merubah Data Ini Artinya Merubah Alur Pengajuan';
+        $this->template->load('template','master/alur',$data);
+    }
+    function getDataAlur(){
+        $result =  $this->pmodel->getAlur();
+        echo json_encode($result);
+    }
+    function getProgress(){
+        $this->output->set_content_type('application/json');
+        $result = $this->pmodel->getProgress()->result();
+        echo json_encode($result);
+    }
+    function saveAlur(){
+        $id     = $this->input->post('id_progress', TRUE);
+        $urutan = $this->input->post('urutan', TRUE);
+        $data = array(
+            'id_progress'   => $id,
+            'ordinal'       => $urutan,
+        );
+        $result = $this->gmodel->insert('tbl_alur',$data);
+        if ($result){
+            echo json_encode(array('message'=>'Save Success'));
+        } else {
+            echo json_encode(array('errorMsg'=>'Some errors occured.'));
+        }
+    }
+    function updateAlur(){
+
+    }
+    function deleteAlur(){
+
     }
 }

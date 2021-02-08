@@ -108,6 +108,7 @@ class Proses extends CI_Controller {
         $icon = $this->input->post('icon', TRUE);
         $idMain = $this->input->post('id_main', TRUE);
         $ordinal = $this->input->post('ordinal', TRUE);
+        $data = array();
         $data = array(
             'judul' => $judul,
             'link' => $link,
@@ -128,6 +129,7 @@ class Proses extends CI_Controller {
         $icon = $this->input->post('icon', TRUE);
         $idMain = $this->input->post('id_main', TRUE);
         $ordinal = $this->input->post('ordinal', TRUE);
+        $data = array();
         $data = array(
             'judul' => $judul,
             'link' => $link,
@@ -251,6 +253,7 @@ class Proses extends CI_Controller {
     function saveAlur(){
         $id     = $this->input->post('id_progress', TRUE);
         $urutan = $this->input->post('urutan', TRUE);
+        $data = array();
         $data = array(
             'id_progress'   => $id,
             'ordinal'       => $urutan,

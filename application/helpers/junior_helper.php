@@ -105,7 +105,7 @@ function checked_privilege($idJabatan, $idProgress)
 function privilegeCheck()
 {
     $ci = get_instance();
-    $ci->db->select('nama_progress');
+    $ci->db->select('pr._id,nama_progress');
     $ci->db->from('tbl_privilege p');
     $ci->db->join('tbl_progress pr', 'pr._id = p.id_progress');
     $ci->db->where('p.id_jabatan', $ci->session->userdata('id_jabatan'));

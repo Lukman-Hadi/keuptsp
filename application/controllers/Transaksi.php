@@ -48,6 +48,7 @@ class Transaksi extends CI_Controller {
         $nm_sub         = $this->input->post('nm_sub');
         $nm_rekening    = $this->input->post('nm_rekening');
         $ma_rekening    = $this->input->post('ma_rekening');
+        $data = array();
         $data = array(
             '_id'               =>$id,
             'id_program'        =>$idProgram,
@@ -117,40 +118,56 @@ class Transaksi extends CI_Controller {
         $kodePengajuan = 'P-'. uniqid();
         $cart = unserialize($this->session->userdata('cart'));
         $total = 0;
-        foreach($cart as $content){
-            $total += $content['jumlah'];
-            $data[] = array(
-                'kode_pengajuan'    =>$kodePengajuan,
-                'id_program'        =>$content['id_program'],
-                'id_kegiatan'       =>$content['id_kegiatan'],
-                'id_sub'            =>$content['id_sub'],
-                'id_rekening'       =>$content['id_rekening'],
-                'jumlah'            =>$content['jumlah']
-            );
+        $data = array();
+        $pengajuan = array();
+        $dataProgress = array();
+        $can = array();
+        //optional
+        $jaga = privilegeCheck();
+        foreach($jaga as $j){
+            $can[]= $j->_id;
         }
-        $pengajuan = array(
-            'kode_pengajuan'    => $kodePengajuan,
-            'total'             => $total,
-            'id_bidang'         => $this->session->id_bidang,
-            'id_user'           => $this->session->_id
-        );
-        $resDetail = $this->gmodel->insertbatch('tbl_pengajuan_detail',$data);
-        if($resDetail){
-            $res = $this->db->insert('tbl_pengajuan',$pengajuan);
-            $resId = $this->db->insert_id();
-            $this->session->unset_userdata('cart');
-            $dataProgress = array(
-                'id_pengajuan'  =>$resId,
-                'id_progress'   =>1,
-                'id_user'       =>$this->session->_id,
-            );
-            if($res){
-                $this->gmodel->insert('tbl_progress_pengajuan',$dataProgress);  
-                echo json_encode(array('message'=>'Add Success'));
+        $status = $this->tmodel->getStatusProgress();
+        if(in_array($status->id_progress,$can)){
+            foreach($cart as $content){
+                $total += $content['jumlah'];
+                $data[] = array(
+                    'kode_pengajuan'    =>$kodePengajuan,
+                    'id_program'        =>$content['id_program'],
+                    'id_kegiatan'       =>$content['id_kegiatan'],
+                    'id_sub'            =>$content['id_sub'],
+                    'id_rekening'       =>$content['id_rekening'],
+                    'jumlah'            =>$content['jumlah']
+                );
             }
-            
+            $pengajuan = array(
+                'kode_pengajuan'    => $kodePengajuan,
+                'total'             => $total,
+                'id_bidang'         => $this->session->id_bidang,
+                'id_user'           => $this->session->_id,
+                'status'            => $status->id_progress
+            );
+            $resDetail = $this->gmodel->insertbatch('tbl_pengajuan_detail',$data);
+            if($resDetail){
+                $res = $this->db->insert('tbl_pengajuan',$pengajuan);
+                $resId = $this->db->insert_id();
+                $this->session->unset_userdata('cart');
+                $dataProgress = array(
+                    'id_pengajuan'  =>$resId,
+                    'id_progress'   =>1,
+                    'id_user'       =>$this->session->_id,
+                );
+                if($res){
+                    $this->gmodel->insert('tbl_progress_pengajuan',$dataProgress);  
+                    echo json_encode(array('message'=>'Add Success'));
+                }
+                
+            }else{
+                echo json_encode(array('errorMsg'=>'Gagal'));
+            }
         }else{
-            echo json_encode(array('message'=>'Gagal'));;
+            $this->session->unset_userdata('cart');
+            echo json_encode(array('errorMsg'=>'Anda Tidak Punya Akses'));
         }
     }
     function detail(){
@@ -210,5 +227,19 @@ class Transaksi extends CI_Controller {
         $this->output->set_content_type('application/json');
         $data = $this->rmodel->getIsRekening($id)->result();
         echo json_encode($data);
+    }
+    function test(){
+        $can = array();
+        //optional
+        $jaga = privilegeCheck();
+        foreach($jaga as $j){
+            $can[]= $j->_id;
+        }
+        $status = $this->tmodel->getStatusProgress();
+        if(in_array($status->id_progress,$can)){
+            echo 'true';
+        }else{
+            echo 'false';
+        }
     }
 }

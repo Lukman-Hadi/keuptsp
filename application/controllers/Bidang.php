@@ -29,6 +29,9 @@ class Bidang extends CI_Controller {
             'nama_bidang' => $nama
         );
         $result = $this->gmodel->insert('tbl_bidang',$data);
+        // $result = $this->db->insert('tbl_bidang',$data);
+        // $insert_id = $this->db->insert_id();
+        // var_dump($insert_id);
         if ($result){
             echo json_encode(array('message'=>'Update Success'));
         } else {

@@ -60,7 +60,6 @@
 		return i+1;
 	}
     function formatRupiah(val, row){
-        console.log('row', row)
         // let num = row.jumlah
         // let numFor = 'Rp ' + num.replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1.");
 	    return uang.format(row.total);
@@ -70,8 +69,11 @@
         <div class="col-12 p-0 text-center">
         <div class="row d-flex justify-content-around">
             <button class="btn btn-outline-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Track Pengajuan"><span class="btn-inner--icon"><i class="fa fa-poll"></i></span></button>
-            <button class="btn btn-success btn-sm py-0 m-0" title="Lihat Pengajuan"><span class="btn-inner--icon"><i class="fa fa-eye"></i></span></button>
+            <button class="btn btn-success btn-sm py-0 m-0 pengajuan" title="Lihat Pengajuan" onclick="detail('${row.kode_pengajuan}')"><span class="btn-inner--icon"><i class="fa fa-eye"></i></span></button>
         </div>
         </div>`
-    }
+	}
+	function detail(n){
+		window.location.replace("detail/"+n);
+	}
 </script>

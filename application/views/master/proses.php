@@ -5,11 +5,19 @@
 				<div class="col-lg-6 col-7">
 					<h6 class="h2 text-white d-inline-block mb-0"><?= $title ?></h6>
 				</div>
-				<div id="toolbar" class="col-lg-12 col-12 text-right col-sm-6">
-					<button type="button" class="btn btn-md btn-neutral" onclick="newForm()">Entry Baru</button>
-					<button type="button" class="btn btn-md btn-danger" onclick="destroy()">Hapus Data</button>
-					<button type="button" class="btn btn-md btn-warning" onclick="editForm()">Edit Data</button>
-					<button type="button" class="btn btn-md btn-info" onclick="aktif()">Hak Approval</button>
+				<div class="col-lg-6 col-5 col-md-12 text-right">
+				<?php $hak = privilegeCheck(); foreach($hak as $ha){
+                        $can = $ha->nama_progress;?>
+					<?php if($can == 'Entry Data Baru'){
+						echo '<button type="button" class="btn btn-md btn-neutral" onclick="newForm()">Entry Baru</button>';
+					}else if($can == 'Edit Data'){
+						echo '<button type="button" class="btn btn-md btn-warning" onclick="editForm()">Edit Data</button>';
+					}else if($can == 'Hapus Data'){
+						echo '<button type="button" class="btn btn-md btn-danger" onclick="destroy()">Hapus Data</button>';
+					}else if($can == 'Aktivasi'){
+						echo '<button type="button" class="btn btn-md btn-info" onclick="aktif()">Aktivasi</button>';
+					}
+					}?>
 				</div>
 			</div>
 		</div>

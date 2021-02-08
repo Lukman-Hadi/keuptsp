@@ -114,18 +114,18 @@ class Transaksi extends CI_Controller {
     }
     function save(){
         // var_dump($this->session->_id);
-        $kodePengajuan = 'pengajuan'. uniqid();
+        $kodePengajuan = 'P-'. uniqid();
         $cart = unserialize($this->session->userdata('cart'));
         $total = 0;
         foreach($cart as $content){
             $total += $content['jumlah'];
             $data[] = array(
-                'kode_pengajuan'    => $kodePengajuan,
-                'id_program'    =>$content['id_program'],
-                'id_kegiatan'   =>$content['id_kegiatan'],
-                'id_sub'        =>$content['id_sub'],
-                'id_rekening'   =>$content['id_rekening'],
-                'jumlah'        =>$content['jumlah']
+                'kode_pengajuan'    =>$kodePengajuan,
+                'id_program'        =>$content['id_program'],
+                'id_kegiatan'       =>$content['id_kegiatan'],
+                'id_sub'            =>$content['id_sub'],
+                'id_rekening'       =>$content['id_rekening'],
+                'jumlah'            =>$content['jumlah']
             );
         }
         $pengajuan = array(
@@ -136,15 +136,32 @@ class Transaksi extends CI_Controller {
         );
         $resDetail = $this->gmodel->insertbatch('tbl_pengajuan_detail',$data);
         if($resDetail){
-            $res = $this->gmodel->insert('tbl_pengajuan',$pengajuan);
+            $res = $this->db->insert('tbl_pengajuan',$pengajuan);
+            $resId = $this->db->insert_id();
+            $this->session->unset_userdata('cart');
+            $dataProgress = array(
+                'id_pengajuan'  =>$resId,
+                'id_progress'   =>1,
+                'id_user'       =>$this->session->_id,
+            );
             if($res){
-                $this->session->unset_userdata('cart');
+                $this->gmodel->insert('tbl_progress_pengajuan',$dataProgress);  
                 echo json_encode(array('message'=>'Add Success'));
             }
             
         }else{
             echo json_encode(array('message'=>'Gagal'));;
         }
+    }
+    function detail(){
+        $nPermohonan = $this->uri->segment(3);
+        $data['permohonan']= $this->tmodel->getPengajuan($nPermohonan)->row();
+        $data['detail']= $this->tmodel->getDetail($nPermohonan)->result();
+        $data['title']  = 'PENGAJUAN NO'.$nPermohonan;
+        $data['collapsed'] = '';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $this->template->load('template','transaksi/detail',$data);
     }
 
     function update(){

@@ -16,11 +16,12 @@ class Transaksi_model extends CI_Model
         $sort = $this->input->get('sort')!=null ? strval($this->input->get('sort')) : 'tp._id';
         $order = $this->input->get('order')!=null ? strval($this->input->get('order')) : 'DESC';
         $search = $this->input->get('search')!=null ? strval($this->input->get('search')) : '';
-
-        $this->db->select('tp.*,us.nama_user, bd.nama_bidang,(SELECT prg.nama_progress FROM tbl_progress_pengajuan AS tpp JOIN tbl_progress AS prg ON prg._id = tpp.id_progress WHERE tpp.id_pengajuan = tp._id ORDER BY tpp._id DESC LIMIT 1) AS status');
+        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress');
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
+        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         if($this->input->get('search')){
             $this->db->group_start();
             $this->db->like('tp.kode_pengajuan',$search,'both');
@@ -29,11 +30,12 @@ class Transaksi_model extends CI_Model
             $this->db->group_end();
         }
         $result['total'] = $this->db->get()->num_rows();
-
-        $this->db->select('tp.*,us.nama_user, bd.nama_bidang,(SELECT prg.nama_progress FROM tbl_progress_pengajuan AS tpp JOIN tbl_progress AS prg ON prg._id = tpp.id_progress WHERE tpp.id_pengajuan = tp._id ORDER BY tpp._id DESC LIMIT 1) AS status');
+        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress');
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
+        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         if($this->input->get('search')){
             $this->db->group_start();
             $this->db->like('tp.kode_pengajuan',$search,'both');
@@ -67,10 +69,12 @@ class Transaksi_model extends CI_Model
         return $this->db->get();
     }
     function getPengajuan($nPermohonan){
-        $this->db->select('tp.*,us.nama_user, bd.nama_bidang,(SELECT prg.nama_progress FROM tbl_progress_pengajuan AS tpp JOIN tbl_progress AS prg ON prg._id = tpp.id_progress WHERE tpp.id_pengajuan = tp._id ORDER BY tpp._id DESC LIMIT 1) AS status');
+        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress');
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
+        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         $this->db->where('tp.kode_pengajuan',$nPermohonan);
         return $this->db->get();
     }

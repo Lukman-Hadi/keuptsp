@@ -154,7 +154,7 @@ class Transaksi extends CI_Controller {
                 $this->session->unset_userdata('cart');
                 $dataProgress = array(
                     'id_pengajuan'  =>$resId,
-                    'id_progress'   =>1,
+                    'ordinal'       =>$status->id_progress,
                     'id_user'       =>$this->session->_id,
                 );
                 if($res){

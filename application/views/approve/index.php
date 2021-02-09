@@ -26,7 +26,7 @@
 				<div class="table-responsive py-2 px-4">
 					<table id="table"
 						   data-toggle="table"
-						   data-url="showAll"
+						   data-url="approve/getApprove"
 						   data-pagination="true" 
 						   data-search="true"
 						   data-click-to-select="true"
@@ -40,7 +40,7 @@
 								<th data-field="nama_bidang" data-sortable="true" data-width="10" data-width-unit="%" >Bidang</th>
 								<th data-field="nama_user" data-sortable="true" data-width="10" data-width-unit="%" >Pemohon</th>
 								<th data-field="total" data-width="15" data-width-unit="%" data-formatter="formatRupiah">Total Permintaan</th>
-								<th data-field="status" data-width="5" data-width-unit="%">Status</th>
+								<th data-field="nama_progress" data-width="5" data-width-unit="%">Status</th>
 								<th data-field="status" data-width="5" data-width-unit="%" data-formatter="statusFormatter">Action</th>
 							</tr>
 						</thead>
@@ -68,12 +68,13 @@
         return `
         <div class="col-12 p-0 text-center">
         <div class="row d-flex justify-content-around">
+            <button class="btn btn-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Approve"><span class="btn-inner--icon"><i class="fa fa-check"></i></span></button>
             <button class="btn btn-outline-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Track Pengajuan"><span class="btn-inner--icon"><i class="fa fa-poll"></i></span></button>
             <button class="btn btn-success btn-sm py-0 m-0 pengajuan" title="Lihat Pengajuan" onclick="detail('${row.kode_pengajuan}')"><span class="btn-inner--icon"><i class="fa fa-eye"></i></span></button>
         </div>
         </div>`
 	}
 	function detail(n){
-		window.location.replace("detail/"+n);
+		window.location.replace("approve/detail/"+n);
 	}
 </script>

@@ -40,7 +40,7 @@
 								<th data-field="nama_bidang" data-sortable="true" data-width="10" data-width-unit="%" >Bidang</th>
 								<th data-field="nama_user" data-sortable="true" data-width="10" data-width-unit="%" >Pemohon</th>
 								<th data-field="total" data-width="15" data-width-unit="%" data-formatter="formatRupiah">Total Permintaan</th>
-								<th data-field="status" data-width="5" data-width-unit="%">Status</th>
+								<th data-field="nama_progress" data-width="5" data-width-unit="%">Status</th>
 								<th data-field="status" data-width="5" data-width-unit="%" data-formatter="statusFormatter">Action</th>
 							</tr>
 						</thead>

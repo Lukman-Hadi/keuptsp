@@ -111,6 +111,37 @@ function privilegeCheck()
     $ci->db->where('p.id_jabatan', $ci->session->userdata('id_jabatan'));
     return $ci->db->get()->result();
 }
+function superCheck(){
+    $can = privilegeCheck();
+    foreach($can as $c){
+        $userCan[] = $c->nama_progress;
+    }
+    if(in_array('All',$userCan)){
+        return true;
+    }else{
+        return false;
+    }
+}
+function canApproveCheck(){
+    $ci = get_instance();
+    $ci->load->model('Approve_model','amodel');
+    $can = privilegeCheck();
+    $userCan = array();
+    foreach($can as $c){
+        $userCan[] = $c->_id;
+    }
+    $canApprove = $ci->amodel->canApproveCheck($userCan);
+    $userCanOrdinal = array();
+    foreach($canApprove as $approve){
+        $userCanOrdinal[] = $approve->ordinal-1;
+    }
+    // $test = $ci->amodel->getProgress($userCanOrdinal);
+    // $userCanApprove = array();
+    // foreach($test as $t){
+    //     $userCanApprove[] = $t->id_progress;
+    // }
+    return $userCanOrdinal;
+}
 
 
 function seo_title($s)

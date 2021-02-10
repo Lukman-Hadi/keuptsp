@@ -142,6 +142,13 @@ function canApproveCheck(){
     // }
     return $userCanOrdinal;
 }
+function cekAlur($ord){
+    $ci = get_instance();
+    $ci->db->select('status');
+    $ci->db->from('tbl_alur');
+    $ci->db->where('ordinal',$ord);
+    return $ci->db->get()->row();
+}
 
 
 function seo_title($s)

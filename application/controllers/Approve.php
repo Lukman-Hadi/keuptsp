@@ -46,21 +46,49 @@ class Approve extends CI_Controller {
         $this->template->load('template','approve/detail',$data);
     }
     //insert to tbl-progress, update tbl pengajuan,
-    function test(){
-        $idPengajuan    = $this->input->get('_id');
+    function approve(){
+        $idPengajuan    = $this->input->post('id');
         $note           = $this->input->post('catatan');
-        // $idPengajuan = 5;
-        $idUser = $this->session->_id;
-        $old = $this->db->get_where('tbl_pengajuan',array('_id'=>$idPengajuan))->row();
-        $status = $old->status+1;
-        $result = $this->gmodel->update('tbl_pengajuan',array('status'=>$status),array('_id'=>$idPengajuan));
+        $idUser         = $this->session->_id;
+        $old            = $this->db->get_where('tbl_pengajuan',array('_id'=>$idPengajuan))->row();
+        $status         = $old->status+1;
+        if(cekAlur(6)->status != null){
+            echo json_encode(array('openMsg'=>'Open'));
+        }else{
+            $result         = $this->gmodel->update('tbl_pengajuan',array('status'=>$status),array('_id'=>$idPengajuan));
+            if($result){
+                $result     = $this->gmodel->insert('tbl_progress_pengajuan',array('id_pengajuan'=>$idPengajuan,'ordinal'=>$status,'id_user'=>$idUser,'catatan'=>$note));
+                if($result){
+                    echo json_encode(array('message'=>'Add Success'));
+                }
+            }else{
+                echo json_encode(array('errorMsg'=>'Gagal'));
+            }
+        }
+    }
+    function approveCair($data){
+        
+    }
+
+    function reject(){
+        $idPengajuan    = $this->input->post('id');
+        $note           = $this->input->post('catatan');
+        $idUser         = $this->session->_id;
+        $old            = $this->db->get_where('tbl_pengajuan',array('_id'=>$idPengajuan))->row();
+        $status         = $old->status-1;
+        $result         = $this->gmodel->update('tbl_pengajuan',array('status'=>$status),array('_id'=>$idPengajuan));
         if($result){
-            $result = $this->gmodel->insert('tbl_progress_pengajuan',array('id_pengajuan'=>$idPengajuan,'ordinal'=>$status,'id_user'=>$idUser,'catatan'=>$note));
+            $result     = $this->gmodel->insert('tbl_progress_pengajuan',array('id_pengajuan'=>$idPengajuan,'ordinal'=>$status,'id_user'=>$idUser,'catatan'=>$note));
             if($result){
                 echo json_encode(array('message'=>'Add Success'));
             }
         }else{
             echo json_encode(array('errorMsg'=>'Gagal'));
         }
+    }
+    function test(){
+       if(cekAlur(6)->status != null){
+           echo 'pencairan';
+       };
     }
 }

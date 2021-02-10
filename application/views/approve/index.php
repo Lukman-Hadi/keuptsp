@@ -50,8 +50,91 @@
 		</div>
 	</div>
 </div>
-
+<div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+	<div class="modal-dialog modal- modal-dialog-centered modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-body p-0">
+				<div class="card bg-secondary border-0 mb-0">
+					<div class="card-header bg-transparent p-0 m-0">
+						<div class="text-muted text-center mt-2 mb-3">Berikan Catatan</div>
+					</div>
+					<div class="card-body px-lg-5 py-lg-2">
+						<form id="ff" method="post" enctype="multipart/form-data" class="needs-validation">
+							<div class="form-group">
+								<input type="text" name="catatan" class="form-control" placeholder="Catatan">
+							</div>
+							<input id="id_pengajuan" type="text" name="id" class="form-control" placeholder="Catatan" hidden>
+							<div class="text-center">
+								<button type="submit" class="btn btn-primary my-4">Approve</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="modal-form-acc" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+	<div class="modal-dialog modal- modal-dialog-centered modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-body p-0">
+				<div class="card bg-secondary border-0 mb-0">
+					<div class="card-header bg-transparent p-0 m-0">
+						<div class="text-muted text-center mt-2 mb-3">Data Pencairan</div>
+					</div>
+					<div class="card-body px-lg-5 py-lg-2">
+						<form id="ff" method="post" enctype="multipart/form-data" class="needs-validation">
+							<div class="form-group">
+								<input type="text" name="cair" class="form-control" placeholder="NOMOR PENCAIRAN">
+							</div>
+							<input id="id_pengajuan" type="text" name="id" class="form-control" placeholder="Catatan" hidden>
+							<div class="text-center">
+								<button type="submit" class="btn btn-primary my-4">Approve</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
+	function approve(id){
+		$('#modal-form').modal('toggle');
+		$('#ff').trigger("reset");
+		$('#id_pengajuan').val(id);
+		url='approve/approve';
+	}
+	$('#ff').on('submit', function (e) {
+	e.preventDefault();
+	const string = $('#ff').serialize();
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: string,
+			success: (result)=>{
+				var result = eval('('+result+')');
+				console.log('result', result)
+				if (result.errorMsg){
+					Toast.fire({
+					type: 'error',
+					title: ''+result.errorMsg+'.'
+					})
+				}else if(result.openMsg){
+					console.log('testttttt');
+					$('#modal-form').modal('toggle');	
+					$('#modal-form-acc').modal('toggle');	
+				}else {
+					Toast.fire({
+					type: 'success',
+					title: ''+result.message+'.'
+					})
+					$('#modal-form').modal('toggle');		// close the dialog
+					$('#table').bootstrapTable('refresh');
+				}
+			},
+		})
+	})
     const uang = new Intl.NumberFormat('ID-id', {
         style: 'currency',
         currency: 'IDR'
@@ -68,7 +151,7 @@
         return `
         <div class="col-12 p-0 text-center">
         <div class="row d-flex justify-content-around">
-            <button class="btn btn-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Approve"><span class="btn-inner--icon"><i class="fa fa-check"></i></span></button>
+            <button class="btn btn-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Approve" onclick="approve('${row._id}')"><span class="btn-inner--icon"><i class="fa fa-check"></i></span></button>
             <button class="btn btn-outline-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Track Pengajuan"><span class="btn-inner--icon"><i class="fa fa-poll"></i></span></button>
             <button class="btn btn-success btn-sm py-0 m-0 pengajuan" title="Lihat Pengajuan" onclick="detail('${row.kode_pengajuan}')"><span class="btn-inner--icon"><i class="fa fa-eye"></i></span></button>
         </div>

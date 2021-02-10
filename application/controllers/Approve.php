@@ -53,18 +53,28 @@ class Approve extends CI_Controller {
         $old            = $this->db->get_where('tbl_pengajuan',array('_id'=>$idPengajuan))->row();
         $status         = $old->status+1;
         if(cekAlur(6)->status != null){
-            echo json_encode(array('openMsg'=>'Open'));
-        }else{
-            $result         = $this->gmodel->update('tbl_pengajuan',array('status'=>$status),array('_id'=>$idPengajuan));
-            if($result){
-                $result     = $this->gmodel->insert('tbl_progress_pengajuan',array('id_pengajuan'=>$idPengajuan,'ordinal'=>$status,'id_user'=>$idUser,'catatan'=>$note));
-                if($result){
-                    echo json_encode(array('message'=>'Add Success'));
-                }
-            }else{
-                echo json_encode(array('errorMsg'=>'Gagal'));
-            }
+            $pencairan = $this->db->get_where('tbl_pencairan',array('id_pengajuan'=>$idPengajuan))->num_rows();
+            $kegiatan = $this->tmodel->getDetail($old->kode_pengajuan)->row();
+            $nomor = nomorPencairan($pencairan,$kegiatan->kode_kegiatan);
+            $data = array(
+                'id_pengajuan'      =>$idPengajuan,
+                'kode_pencairan'    =>$nomor,
+                'kode_pengajuan'    =>$old->kode_pengajuan,
+                'total'             =>$old->total,
+                'id_auditor'        =>$idUser,
+                'tgl_pencairan'     =>date('Y-m-d'),
+            );
+            $this->gmodel->insert('tbl_pencairan',$data);
         }
+        $result         = $this->gmodel->update('tbl_pengajuan',array('status'=>$status),array('_id'=>$idPengajuan));
+        if($result){
+            $result     = $this->gmodel->insert('tbl_progress_pengajuan',array('id_pengajuan'=>$idPengajuan,'ordinal'=>$status,'id_user'=>$idUser,'catatan'=>$note));
+            if($result){
+                echo json_encode(array('message'=>'Add Success'));
+            }
+        }else{
+            echo json_encode(array('errorMsg'=>'Gagal'));
+        } 
     }
     function approveCair($data){
         

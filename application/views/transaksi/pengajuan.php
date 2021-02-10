@@ -276,8 +276,10 @@
                     Toast.fire({
                         type: 'success',
                         title: '' + result.message + '.'
-                    })
+                })
                     $('#table').bootstrapTable('refresh');
+                    $("#kd_program").prop("disabled", true);
+                    $("#kd_kegiatan").prop("disabled", true);
                 }
                 $('#table').bootstrapTable('refresh');
             },

@@ -7,6 +7,15 @@ function getInfo($field)
     $rs = $ci->db->get('tbl_perusahaan')->row_array();
     return $rs[$field];
 }
+function nomorPencairan($urut,$kodeKeg){
+    $kodeno = '900';
+    $urutan = $urut+1;
+    $kode = $kodeKeg;
+    $bulan = date('m');
+    $tahun = date('Y');
+    $no = $kodeno.'/'.$urutan.'-'.$kode.'/'.$bulan.'/'.$tahun;
+    return $no;
+}
 
 function terbilang($angka)
 {

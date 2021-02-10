@@ -59,7 +59,7 @@ class Transaksi_model extends CI_Model
         return $query;
     }
     function getDetail($nPermohonan){
-        $this->db->select('nama_program, kode_rekening, nama_kegiatan, nama_sub, nama_rekening, jumlah, pagu, (SELECT SUM(jumlah) from tbl_pengajuan_detail pds WHERE pds.id_rekening = pd.id_rekening) as total');
+        $this->db->select('nama_program, kode_rekening, kode_kegiatan, nama_kegiatan, nama_sub, nama_rekening, jumlah, pagu, (SELECT SUM(jumlah) from tbl_pengajuan_detail pds WHERE pds.id_rekening = pd.id_rekening) as total');
         $this->db->from('tbl_pengajuan_detail pd');
         $this->db->join('tbl_program p','p._id = pd.id_program');
         $this->db->join('tbl_kegiatan k','k._id = pd.id_kegiatan');

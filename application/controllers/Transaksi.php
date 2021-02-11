@@ -25,7 +25,6 @@ class Transaksi extends CI_Controller {
         $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2-bootstrap.css';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
-        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/editable/bootstrap-editable.min.js';
         $this->template->load('template','transaksi/pengajuan',$data);
     }
 	function listPengajuan(){
@@ -37,9 +36,12 @@ class Transaksi extends CI_Controller {
     }
 
     function addToCart(){
+        if($this->session->has_userdata('cart')) {
+            $c = array_values(unserialize($this->session->userdata('cart')));
+        }
         $id             = uniqid();
-        $idProgram      = $this->input->post('id_program'); 
-        $idKegiatan     = $this->input->post('id_kegiatan');
+        $idProgram      = $this->input->post('id_program')?$this->input->post('id_program'):$c[0]['id_program']; 
+        $idKegiatan     = $this->input->post('id_kegiatan')?$this->input->post('id_kegiatan'):$c[0]['id_kegiatan'];
         $idSub          = $this->input->post('id_sub');
         $idRekening     = $this->input->post('id_rekening');
         $jumlah         = $this->input->post('jumlah');
@@ -241,5 +243,8 @@ class Transaksi extends CI_Controller {
         }else{
             echo 'false';
         }
+    }
+    function cekSessi(){
+        print_r($this->session->cart);
     }
 }

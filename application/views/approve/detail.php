@@ -37,7 +37,7 @@
                             Program
                         </div>
                         <div class="col-sm-9 col-md-9">
-                            : <?= $permohonan->nama_user ?>
+                            : <?= $detail[0]->nama_program ?>
                         </div>
                     </div>
                     <div class="row">
@@ -45,7 +45,7 @@
                             Kegiatan 
                         </div>
                         <div class="col-sm-9 col-md-9">
-                            : <?= $permohonan->nama_user ?>
+                            : <?= $detail[0]->nama_kegiatan ?>
                         </div>
                     </div>
                     <div class="row">

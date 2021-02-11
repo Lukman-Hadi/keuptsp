@@ -18,59 +18,109 @@
 <div class="container-fluid mt--6">
     <div class="card mb-4">
         <div class="card-header">
-            <h3 class="mb-0">Input Pengajuan Baru</h3>
+            <h3 class="mb-0">Pilih Rekening Kegiatan</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive py-2 px-2">
+                <table id="table1"
+                        data-toggle="table"
+                        class="table table-flush"
+                        data-show-footer="true">
+                    <thead class="thead-light">
+                        <tr>
+                            <th data-width="5" data-width-unit="%" >Kode Program</th>
+                            <th data-width="5" data-width-unit="%" >Kode Kegiatan</th>
+                            <th data-field="nm_sub" data-width="5" data-width-unit="%" >Kode Sub Kegiatan</th>
+                            <th data-width="5" data-width-unit="%" >Kode Rekening Kegiatan</th>
+                            <th data-width="50" data-width-unit="%" >Nama Rekening Kegiatan</th>
+                            <th data-width="20" data-width-unit="%" data-formatter="formatRupiah" data-footer-formatter="footerJumlah">Jumlah Pengajuan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?= json_encode($detail); ?>
+                    <?php foreach($detail as $d){?>
+                        <tr>
+                            <td><?= $d->kode_program ?></td>
+                            <td><?= $d->kode_kegiatan ?></td>
+                            <td><?= $d->kode_sub ?></td>
+                            <td><?= $d->kode_rekening ?></td>
+                            <td><?= $d->nama_rekening ?></td>
+                            <td><?= $d->total ?></td>
+                        </tr>
+                    <?php }; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">Input Detail Bku</h3>
         </div>
         <div class="card-body">
             <form id="ff" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-control-label" for="example3cols1Input">Program</label>
-                            <select id="kd_program" name="id_program" class="form-control form-control-sm select2-single" required>
-                                <option></option>
-                            </select>
+                            <label class="form-control-label" for="example3cols1Input">Keterangan</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="ex: Fotocopy, Honor">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-control-label" for="example3cols2Input">Kegiatan</label>
-                            <select id="kd_kegiatan" name="id_kegiatan" class="form-control form-control-sm select2-single" required>
-                                <option></option>
-                            </select>
+                            <label class="form-control-label" for="example3cols3Input">Penerima</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="ex: Toko anginribut, tn.xxx">
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-control-label" for="example3cols3Input">Sub Kegiatan</label>
-                            <select id="kd_sub" name="id_sub" class="form-control form-control-sm select2-single" required>
-                                <option></option>
-                            </select>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="example3cols2Input">Satuan</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="ex: dus, rim">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="example3cols2Input">Harga</label>
+                                    <input type="text" class="form-control form-control-sm uang" placeholder="ex: 500000">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="example3cols2Input">Total</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="ex: 10, 20">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-control-label" for="example4cols1Input">Rekening Kegiatan</label>
-                            <select id="kd_rekening" name="id_rekening" class="form-control form-control-sm select2-single" required>
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-control-label" for="example4cols2Input">Jumlah Yang Akan Dicairkan</label>
-                            <input type="text" class="form-control form-control-sm uang" name="jumlah" placeholder="Jumlah Yang Akan Dicairkan">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-control-label" for="example4cols2Input">Jumlah Yang Tersedia</label>
+                            <label class="form-control-label" for="example4cols2Input">Subtotal</label>
                             <div class="input-group input-group-merge">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-wallet fa-lg"></i></span>
                                 </div>
-                                <input type="text" class="form-control form-control-sm uang" id="tersedia" placeholder="Jumlah Yang Tersedia" disabled>
+                                <input type="text" class="form-control form-control-sm uang" id="tersedia" placeholder="Sub Total" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="example4cols2Input">Pajak</label>
+                            <input type="text" class="form-control form-control-sm uang" name="jumlah" placeholder="Pajak">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-control-label" for="example4cols2Input">Grandtotal</label>
+                            <div class="input-group input-group-merge">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-wallet fa-lg"></i></span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm uang" id="tersedia" placeholder="Grandtotal" disabled>
                             </div>
                         </div>
                     </div>
@@ -88,9 +138,9 @@
             </form>
         </div>
     </div>
-    <div class="card mb-4">
+    <!-- <div class="card mb-4">
         <div class="card-header">
-            <h3 class="mb-0">Detail Pengajuan</h3>
+            <h3 class="mb-0">Detail Bku</h3>
             <div class="table-responsive py-2 px-2">
                 <div id="toolbar">
                     <button id="remove" class="btn btn-danger" onclick="remove()">
@@ -110,7 +160,6 @@
                     <thead class="thead-light">
                         <tr>
                             <th data-checkbox="true"></th>
-                            <!-- <th data-field="no" data-formatter="nomerFormatter" data-width="5" data-width-unit="%">No</th> -->
                             <th data-field="nm_program" data-width="5" data-width-unit="%" >Kode Program</th>
                             <th data-field="nm_kegiatan" data-width="5" data-width-unit="%" >Kode Kegiatan</th>
                             <th data-field="nm_sub" data-width="5" data-width-unit="%" >Kode Sub Kegiatan</th>
@@ -125,7 +174,7 @@
         <div class="card-body">
             <button class="btn btn-success btn-block" onclick="save()">Ajukan</button>
         </div>
-    </div>
+    </div> -->
 </div>
 <script>
     const uang = new Intl.NumberFormat('ID-id', {
@@ -133,7 +182,7 @@
         currency: 'IDR'
     });
     $(document).ready(function() {
-        $.fn.select2.defaults.set("theme", "bootstrap");
+        // $.fn.select2.defaults.set("theme", "bootstrap");
         // $('#table').bootstrapTable();
         $('.uang').mask('000.000.000.000.000', {
             reverse: true
@@ -289,9 +338,10 @@
     });
     function formatRupiah(val, row){
         console.log('row', row)
+        console.log('val', val)
         // let num = row.jumlah
         // let numFor = 'Rp ' + num.replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1.");
-	    return uang.format(row.jumlah);
+	    return uang.format(val);
     };
     function footerJumlah(data, footerValue){
         console.log('data', data)

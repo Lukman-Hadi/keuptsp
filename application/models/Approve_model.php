@@ -27,7 +27,7 @@ class Approve_model extends CI_Model
         $sort = $this->input->get('sort')!=null ? strval($this->input->get('sort')) : 'tp._id';
         $order = $this->input->get('order')!=null ? strval($this->input->get('order')) : 'DESC';
         $search = $this->input->get('search')!=null ? strval($this->input->get('search')) : '';
-        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress');
+        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress,al.status as kunci');
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
@@ -47,7 +47,7 @@ class Approve_model extends CI_Model
         return $result;
     }
     function getApproveTotalByBidang($bidang,$hak){
-        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress');
+        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress,');
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');

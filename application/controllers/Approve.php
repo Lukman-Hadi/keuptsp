@@ -52,9 +52,9 @@ class Approve extends CI_Controller {
         $idUser         = $this->session->_id;
         $old            = $this->db->get_where('tbl_pengajuan',array('_id'=>$idPengajuan))->row();
         $status         = $old->status+1;
-        if(cekAlur(6)->status != null){
-            $pencairan = $this->db->get_where('tbl_pencairan',array('id_pengajuan'=>$idPengajuan))->num_rows();
+        if(cekAlur($status)->status != null){
             $kegiatan = $this->tmodel->getDetail($old->kode_pengajuan)->row();
+            $pencairan = $this->db->get_where('tbl_pencairan',array('prefix'=>$kegiatan->kode_kegiatan))->num_rows();
             $nomor = nomorPencairan($pencairan,$kegiatan->kode_kegiatan);
             $data = array(
                 'id_pengajuan'      =>$idPengajuan,
@@ -62,6 +62,7 @@ class Approve extends CI_Controller {
                 'kode_pengajuan'    =>$old->kode_pengajuan,
                 'total'             =>$old->total,
                 'id_auditor'        =>$idUser,
+                'prefix'            =>$kegiatan->kode_kegiatan,
                 'tgl_pencairan'     =>date('Y-m-d'),
             );
             $this->gmodel->insert('tbl_pencairan',$data);
@@ -95,6 +96,16 @@ class Approve extends CI_Controller {
         }else{
             echo json_encode(array('errorMsg'=>'Gagal'));
         }
+    }
+    function bku(){
+        $nPermohonan = $this->input->get('id');
+        $data['permohonan']= $this->tmodel->getPengajuan($nPermohonan)->row();
+        $data['detail']= $this->tmodel->getDetail($nPermohonan)->result();
+        $data['title']  = 'PENGAJUAN NO '.$nPermohonan;
+        $data['collapsed'] = '';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $this->template->load('template','approve/bku',$data);
     }
     function test(){
        if(cekAlur(6)->status != null){

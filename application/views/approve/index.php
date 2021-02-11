@@ -41,7 +41,7 @@
 								<th data-field="nama_user" data-sortable="true" data-width="10" data-width-unit="%" >Pemohon</th>
 								<th data-field="total" data-width="15" data-width-unit="%" data-formatter="formatRupiah">Total Permintaan</th>
 								<th data-field="nama_progress" data-width="5" data-width-unit="%">Status</th>
-								<th data-field="status" data-width="8" data-width-unit="%" data-formatter="statusFormatter">Action</th>
+								<th data-field="status" data-width="10" data-width-unit="%" data-formatter="statusFormatter">Action</th>
 							</tr>
 						</thead>
 					</table>
@@ -148,11 +148,12 @@
 	    return uang.format(row.total);
     };
     function statusFormatter(val, row){
+		console.log('row', row)
 		if(row.kunci ==1){
 			return `
 			<div class="col-12 p-0 text-center">
 			<div class="row d-flex justify-content-around">
-				<button class="btn btn-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Input SPJ" onclick="spj('${row._id}')"><span class="btn-inner--icon"><i class="fa fa-edit"></i></span></button>
+				<button class="btn btn-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Input BKU" onclick="bku('${row.kode_pengajuan}')"><span class="btn-inner--icon"><i class="fa fa-edit"></i></span></button>
 				<button class="btn btn-outline-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Track Pengajuan"><span class="btn-inner--icon"><i class="fa fa-poll"></i></span></button>
 			</div>
 			</div>`
@@ -169,5 +170,8 @@
 	}
 	function detail(n){
 		window.location.replace("approve/detail/"+n);
+	}
+	function bku(id){
+		window.location.replace("approve/bku?id="+id);
 	}
 </script>

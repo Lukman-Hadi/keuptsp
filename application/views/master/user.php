@@ -108,7 +108,7 @@
 								<select id="jabatan" name="id_jabatan" class="form-control select2-single" required><option></option></select>
 							</div>
 							<div class="form-group mb-1">
-								<label>Jabatan</label>
+								<label>Foto</label>
 								<input type="file" name="foto" class="form-control">
 							</div>
 							<!-- <div class="form-group mb-1">

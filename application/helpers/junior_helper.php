@@ -8,12 +8,13 @@ function getInfo($field)
     return $rs[$field];
 }
 function nomorPencairan($urut,$kodeKeg){
+    //urut/bpk-bidang-/bulan/tahun
     $kodeno = '900';
     $urutan = $urut+1;
-    $kode = $kodeKeg;
-    $bulan = date('m');
-    $tahun = date('Y');
-    $no = $kodeno.'/'.$urutan.'-'.$kode.'/'.$bulan.'/'.$tahun;
+    $kode   = $kodeKeg;
+    $bulan  = date('m');
+    $tahun  = date('Y');
+    $no     = $kodeno.'/'.$urutan.'-'.$kode.'/'.$bulan.'/'.$tahun;
     return $no;
 }
 

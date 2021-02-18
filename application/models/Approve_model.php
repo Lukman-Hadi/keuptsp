@@ -133,4 +133,11 @@ class Approve_model extends CI_Model
         $result = array_merge($result, ['rows' => $item]);
         return $result;
     }
+    function isRekeningRincian($kode){
+        $this->db->select('p.*,r.kode_rekening,r.nama_rekening');
+        $this->db->from('tbl_pengajuan_detail p');
+        $this->db->join('tbl_rekening_kegiatan r','p.id_rekening = r._id','LEFT');
+        $this->db->where('kode_pengajuan',$kode);
+        return $this->db->get();
+    }
 }

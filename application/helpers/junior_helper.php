@@ -7,6 +7,14 @@ function getInfo($field)
     $rs = $ci->db->get('tbl_perusahaan')->row_array();
     return $rs[$field];
 }
+function nomorPengajuan($idSub){
+    //P-bidang-nmkeg/no/bulan/tahun
+    $prefix = 'P-';
+    $ci = get_instance();
+
+    $ci->db->get_where();
+}
+
 function nomorPencairan($urut,$kodeKeg){
     //urut/bpk-bidang-/bulan/tahun
     $kodeno = '900';

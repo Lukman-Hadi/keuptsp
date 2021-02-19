@@ -227,7 +227,7 @@ class Approve extends CI_Controller {
     }
 
     function uploadBukti(){
-        $config['upload_path']          = './assets/bukti';
+        $config['upload_path']          = './assets/bukti/';
         $config['allowed_types']        = 'pdf';
         $config['remove_spaces'] = TRUE;
         $config['encrypt_name'] = TRUE;
@@ -271,16 +271,37 @@ class Approve extends CI_Controller {
             }));
             foreach($match as $m){
                 $data[] = array(
-                    'id_pengajuan_detail'
-                )
+                    'id_pengajuan_detail'=>$m->idPengajuan,
+                    'keterangan'=>$m->keterangan,
+                    'satuan'=>$m->satuan,
+                    'harga'=>$m->harga,
+                    'penerima'=>$m->penerima,
+                    'total'=>$m->total,
+                    'subtotal'=>$m->subtotal,
+                    'pph21'=>$m->pph21,
+                    'pph22'=>$m->pph22,
+                    'pph23'=>$m->pph23,
+                    'pphd'=>$m->pphd,
+                    'ppn'=>$m->ppn,
+                    'jumlah'=>$m->jumlah,
+                    'bukti'=>$m->bukti,
+                );
             }
-            echo json_encode($match);
+            $result = $this->gmodel->insertbatch('tbl_pengajuan_rincian',$data);
+            if($result){
+                echo json_encode(array('message'=>'Add Success'));
+            }else{
+                echo json_encode(array('errorMsg'=>'Save Gagal'));
+            }
+            // echo json_encode($match);
+        }else{
+            echo json_encode(array('errorMsg'=>'Anda Belum Menginput Rincian'));
         }
     }
     function testsesi(){
         // $this->session->unset_userdata('cartbku');
         $this->output->set_content_type('application/json');
-        echo json_encode(unserialize($this->session->cartbku));
+        echo json_encode(unserialize($this->session->cart));
     }
 
     // untuk Temporary Folder

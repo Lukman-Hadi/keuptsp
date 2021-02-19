@@ -23,9 +23,13 @@ class Transaksi extends CI_Controller {
         $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2-bootstrap.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.css';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
-        $this->template->load('template','transaksi/pengajuan',$data);
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/form/form.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/pdfobject/pdfobject.min.js';
+        $this->template->load('template','transaksi/pengajuanbaru',$data);
     }
 	function listPengajuan(){
         $data['title']  = 'DAFTAR PENGAJUAN';
@@ -77,6 +81,56 @@ class Transaksi extends CI_Controller {
                 $cart[$index]['jumlah']+=str_replace('.','',$jumlah);
                 $result = $this->session->set_userdata('cart', serialize($cart));
             }
+        }
+        echo json_encode(array('message'=>'Add Success'));
+    }
+    function addToCartNew(){
+        if($this->session->has_userdata('cart')) {
+            $c = array_values(unserialize($this->session->userdata('cart')));
+        }
+        $id             = uniqid();
+        $idProgram      = $this->input->post('id_program')?$this->input->post('id_program'):$c[0]['id_program']; 
+        $idKegiatan     = $this->input->post('id_kegiatan')?$this->input->post('id_kegiatan'):$c[0]['id_kegiatan'];
+        $idSub          = $this->input->post('id_sub')?$this->input->post('id_sub'):$c[0]['id_sub'];
+        $idRekening     = $this->input->post('id_rekening');
+        $keterangan     = $this->input->post('keterangan');
+        $satuan         = $this->input->post('satuan');
+        $harga          = str_replace('.','',$this->input->post('harga'));
+        $total          = str_replace('.','',$this->input->post('total'));
+        $jumlah         = str_replace('.','',$this->input->post('jumlah'));
+        $nm_program     = $this->input->post('nm_program');
+        $nm_kegiatan    = $this->input->post('nm_kegiatan');
+        $nm_sub         = $this->input->post('nm_sub');
+        $nm_rekening    = $this->input->post('nm_rekening');
+        $ma_rekening    = $this->input->post('ma_rekening');
+        if(!$jumlah){
+            $jumlah = intval($total)*intval($harga);
+        }
+        $data = array();
+        $data = array(
+            '_id'               =>$id,
+            'id_program'        =>$idProgram,
+            'id_kegiatan'       =>$idKegiatan,
+            'id_sub'            =>$idSub,
+            'id_rekening'       =>$idRekening,
+            'jumlah'            =>$jumlah,
+            'total'             =>$total,
+            'harga'             =>$harga,
+            'satuan'            =>$satuan,
+            'keterangan'        =>$keterangan,
+            'nm_program'        =>$nm_program,
+            'nm_kegiatan'       =>$nm_kegiatan,
+            'nm_sub'            =>$nm_sub,
+            'nm_rekening'       =>$nm_rekening,
+            'ma_rekening'       =>$ma_rekening,
+        );
+        if(!$this->session->has_userdata('cart')) {
+            $cart = array($data);
+            $this->session->set_userdata('cart', serialize($cart));
+        } else {
+            $cart = array_values(unserialize($this->session->userdata('cart')));
+            array_push($cart, $data);
+            $this->session->set_userdata('cart', serialize($cart));
         }
         echo json_encode(array('message'=>'Add Success'));
     }
@@ -230,6 +284,22 @@ class Transaksi extends CI_Controller {
         $data = $this->rmodel->getIsRekening($id)->result();
         echo json_encode($data);
     }
+    function pencairan(){
+        $data['title']  = 'DATA PENCAIRAN';     
+        $data['subtitle']  = 'List Pengajuan yang Sudah Dicairkan';
+        $data['description']  = 'Berikut Adalah Data Pengajuan yang Sudah Dicairkan';
+        $data['collapsed'] = '';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2-bootstrap.css';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
+        $this->template->load('template','transaksi/pencairan',$data);
+    }
+
+    function showPencairan(){
+
+    }
     function test(){
         $can = array();
         //optional
@@ -244,7 +314,8 @@ class Transaksi extends CI_Controller {
             echo 'false';
         }
     }
-    function cekSessi(){
-        print_r($this->session->cart);
+    //input terbaru//
+    function saveBaru(){
+
     }
 }

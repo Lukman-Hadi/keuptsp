@@ -157,6 +157,7 @@ class Transaksi extends CI_Controller {
         }
     }
     function show(){
+        $this->output->set_content_type('application/json');
         $cart = array();
         if($this->session->userdata('cart')){
             $cart = array_values(unserialize($this->session->userdata('cart')));
@@ -169,7 +170,7 @@ class Transaksi extends CI_Controller {
         $result =  $this->tmodel->getAll();
         echo json_encode($result);
     }
-    function save(){
+    function saveOld(){
         // var_dump($this->session->_id);
         $kodePengajuan = 'P-'. uniqid();
         $cart = unserialize($this->session->userdata('cart'));
@@ -218,6 +219,106 @@ class Transaksi extends CI_Controller {
                     echo json_encode(array('message'=>'Add Success'));
                 }
                 
+            }else{
+                echo json_encode(array('errorMsg'=>'Gagal'));
+            }
+        }else{
+            $this->session->unset_userdata('cart');
+            echo json_encode(array('errorMsg'=>'Anda Tidak Punya Akses'));
+        }
+    }
+    private function rekeningIsExist($id,array $data)
+    {
+        for ($i = 0; $i < count($data); $i ++) {
+            if ($data[$i]['id_rekening'] == $id) {
+                return $i;
+            }
+        }
+        return -1;
+    }
+    function save(){;
+        $kodePengajuan = 'P-'. uniqid();
+        $cart = unserialize($this->session->userdata('cart'));
+        $total = 0;
+        $data = array();
+        $pengajuan = array();
+        $dataProgress = array();
+        $can = array();
+        $rinci = array();
+        $detail = array();
+        //optional
+        $jaga = privilegeCheck();
+        foreach($jaga as $j){
+            $can[]= $j->_id;
+        }
+        $status = $this->tmodel->getStatusProgress();
+        if(in_array($status->id_progress,$can)){
+            foreach($cart as $content){
+                $total += $content['jumlah'];
+                $index = $this->rekeningIsExist($content['id_rekening'],$data);
+                $rinci = array(
+                    'satuan'=>$content['satuan'],
+                    'harga'=>$content['harga'],
+                    'total'=>$content['total'],
+                    'jumlah'=>$content['jumlah'],
+                    'keterangan'=>$content['keterangan'],
+                );
+                if($index >=0){
+                    $data[$index]['jumlah'] += $content['jumlah'];
+                    $data[$index]['detail'][] = $rinci;
+                }else{
+                    $data[] = array(
+                        'kode_pengajuan'    =>$kodePengajuan,
+                        'id_program'        =>$content['id_program'],
+                        'id_kegiatan'       =>$content['id_kegiatan'],
+                        'id_sub'            =>$content['id_sub'],
+                        'id_rekening'       =>$content['id_rekening'],
+                        'jumlah'            =>$content['jumlah'],
+                        'detail'            =>array($rinci),
+                    );
+                }
+            }
+            foreach($data as $d){
+                $this->db->insert('tbl_pengajuan_detail',array(
+                    'kode_pengajuan'=>$d['kode_pengajuan'],
+                    'id_program'=>$d['id_program'],
+                    'id_kegiatan'=>$d['id_kegiatan'],
+                    'id_sub'=>$d['id_sub'],
+                    'id_rekening'=>$d['id_rekening'],
+                    'jumlah'=>$d['jumlah'],
+                ));
+                $inId = $this->db->insert_id();
+                foreach($d['detail'] as $dd){
+                    $detail[] = array(
+                        'id_pengajuan_detail'=>$inId,
+                        'keterangan'=>$dd['keterangan'],
+                        'harga'=>$dd['harga'],
+                        'total'=>$dd['total'],
+                        'jumlah'=>$dd['jumlah'],
+                    );
+                }
+            }
+            $pengajuan = array(
+                'kode_pengajuan'    => $kodePengajuan,
+                'total'             => $total,
+                'id_bidang'         => $this->session->id_bidang,
+                'id_user'           => $this->session->_id,
+                'status'            => $status->id_progress
+            );
+            $resDetail = $this->gmodel->insertbatch('tbl_pengajuan_rincian',$detail);
+            if($resDetail){
+                $res = $this->db->insert('tbl_pengajuan',$pengajuan);
+                $resId = $this->db->insert_id();
+                // $this->session->unset_userdata('cart');
+                $dataProgress = array(
+                    'id_pengajuan'  =>$resId,
+                    'ordinal'       =>$status->id_progress,
+                    'id_user'       =>$this->session->_id,
+                );
+                if($res){
+                    $this->gmodel->insert('tbl_progress_pengajuan',$dataProgress);  
+                    echo json_encode(array('message'=>'Add Success'));
+                }      
             }else{
                 echo json_encode(array('errorMsg'=>'Gagal'));
             }

@@ -42,8 +42,23 @@ class Approve extends CI_Controller {
         $data['title']  = 'PENGAJUAN NO'.$nPermohonan;
         $data['collapsed'] = '';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2-bootstrap.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.css';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/form/form.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/pdfobject/pdfobject.min.js';
         $this->template->load('template','approve/detail',$data);
+        // $this->output->set_content_type('application/json');
+        // echo json_encode($this->tmodel->getDetailNew($nPermohonan)->result());
+    }
+    function getDetail(){
+        $nPermohonan = $this->uri->segment(3);
+        $data = $this->tmodel->getDetailNew($nPermohonan)->result();
+        $this->output->set_content_type('application/json');
+        echo json_encode($data);
     }
     //insert to tbl-progress, update tbl pengajuan,
     function approve(){
@@ -113,7 +128,7 @@ class Approve extends CI_Controller {
         $data['js_files'][] = base_url() . 'assets/admin/vendor/form/form.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/pdfobject/pdfobject.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/emodal/eModal.min.js';
-        $this->template->load('template','approve/bku',$data);
+        $this->template->load('template','approve/bkubaru',$data);
     }
     function isRekening(){
         $kode = $this->input->get('kode');

@@ -59,13 +59,21 @@ class Transaksi_model extends CI_Model
         return $query;
     }
     function getDetail($nPermohonan){
-        $this->db->select('pd.*,nama_program, kode_rekening, kode_program, kode_sub, kode_rekening, kode_kegiatan, nama_kegiatan, nama_sub, nama_rekening, jumlah, pagu, (SELECT SUM(jumlah) from tbl_pengajuan_detail pds WHERE pds.id_rekening = pd.id_rekening) as total');
+        $this->db->select('pd.*,nama_program, kode_rekening, kode_program, kode_sub, kode_rekening, kode_kegiatan,r._id, nama_kegiatan, nama_sub, nama_rekening, jumlah, pagu, (SELECT SUM(pdd.jumlah) from tbl_pencairan pc JOIN tbl_pengajuan pjj ON pjj.kode_pengajuan = pc.kode_pengajuan JOIN tbl_pengajuan_detail pdd on pdd.kode_pengajuan = pjj.kode_pengajuan WHERE pdd.id_rekening = r._id GROUP BY pdd.id_rekening) as total');
         $this->db->from('tbl_pengajuan_detail pd');
         $this->db->join('tbl_program p','p._id = pd.id_program');
         $this->db->join('tbl_kegiatan k','k._id = pd.id_kegiatan');
         $this->db->join('tbl_sub_kegiatan s','s._id = pd.id_sub');
         $this->db->join('tbl_rekening_kegiatan r','r._id = pd.id_rekening');
         $this->db->where('pd.kode_pengajuan',$nPermohonan);
+        return $this->db->get();
+    }
+    function getDetailPencairan($id){
+        $this->db->select('pd.jumlah');
+        $this->db->from('tbl_pencairan pc');
+        $this->db->join('tbl_pengajuan p','p._id = pc.id_pengajuan');
+        $this->db->join('tbl_pengajuan_detail pd','pd.kode_pengajuan = p.kode_pengajuan');
+        $this->db->where('pc.id_pengajuan',$id);
         return $this->db->get();
     }
     function getDetailNew($nPermohonan){

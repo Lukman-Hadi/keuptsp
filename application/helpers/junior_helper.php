@@ -7,12 +7,28 @@ function getInfo($field)
     $rs = $ci->db->get('tbl_perusahaan')->row_array();
     return $rs[$field];
 }
-function nomorPengajuan($idSub){
+function nomorPengajuan($idSub,$bidang){
     //P-bidang-nmkeg/no/bulan/tahun
-    $prefix = 'P-';
     $ci = get_instance();
+    $prefixx = 'P';
+    $bidang = $ci->db->get_where('tbl_bidang',array('_id'=>$bidang))->row();
+    $sub = $ci->db->get_where('tbl_sub_kegiatan',array('_id'=>$idSub))->row();
+    $kode = $ci->db->get('tbl_pengajuan',array('id_bidang'=>$bidang->_id))->num_rows();
+    $bulan  = date('m');
+    $tahun  = date('Y');
+    $no = $prefixx.'-'.$bidang->alias.'-'.singkat($sub->nama_sub).'/'.($kode+1).'/'.$bulan.'/'.$tahun;
+    return $no;
+}
 
-    $ci->db->get_where();
+function singkat($string){
+    $abbreviation = "";
+    $modif = str_replace('/', '', $string);
+    $newS = ucwords($modif);
+    $words = explode(" ", "$newS");
+      foreach($words as $word){
+        $abbreviation .= substr($word, 0, 1)."";
+      }
+   return $abbreviation; 
 }
 
 function nomorPencairan($urut,$kodeKeg){
@@ -265,92 +281,6 @@ if (!function_exists('time_ago')) {
 }
 
 
-if (!function_exists('prefix_selular')) {
-    function prefix_selular($id)
-    {
-        $simpati = array("0811", "0812", "0813", "0821", "0822");
-        $as = array("0823", "0852", "0853", "0851");
-        $mentari = array("0855", "0858", "0815", "0816");
-        $im3 = array("0856", "0857");
-        $m2 = array("0814");
-        $xl = array("0817", "0818", "0819", "0859", "0877", "0878");
-        $axis = array("0838", "0831", "0832", "0833");
-        $tree = array("0895", "0896", "0897", "0898", "0899");
-        $smartfreen = array("0881", "0882", "0883", "0884", "0885", "0886", "0887", "0888", "0889");
-        $ceria = array("0828");
-        $smarttelecom = array("0881", "0882", "0883", "0884", "0885", "0886", "0887");
-        $data = array();
-        $data[] = array(
-            'simpati'       => $simpati,
-            'as'            => $as,
-            'mentari'       => $mentari,
-            'im3'           => $im3,
-            'm2'            => $m2,
-            'xl'            => $xl,
-            'axis'          => $axis,
-            'tree'          => $tree,
-            'smartfreen'    => $smartfreen,
-            'ceria'         => $ceria,
-            'smarttelecom'  => $smarttelecom
-        );
-        $value[] = array();
-        foreach ($data as $key => $value) {
-            if (in_array(substr($id, 0, 4), $value['simpati'])) {
-                $val = 'Simpati';
-            } else if (in_array(substr($id, 0, 4), $value['as'])) {
-                $val = 'As';
-            } else if (in_array(substr($id, 0, 4), $value['mentari'])) {
-                $val = 'Mentari';
-            } else if (in_array(substr($id, 0, 4), $value['im3'])) {
-                $val = 'IM3';
-            } else if (in_array(substr($id, 0, 4), $value['m2'])) {
-                $val = 'M2';
-            } else if (in_array(substr($id, 0, 4), $value['xl'])) {
-                $val = 'XL Axiata';
-            } else if (in_array(substr($id, 0, 4), $value['axis'])) {
-                $val = 'Axis';
-            } else if (in_array(substr($id, 0, 4), $value['tree'])) {
-                $val = 'Tree';
-            } else if (in_array(substr($id, 0, 4), $value['smartfreen'])) {
-                $val = 'Smartfreen';
-            } else if (in_array(substr($id, 0, 4), $value['ceria'])) {
-                $val = 'Ceria';
-            } else if (in_array(substr($id, 0, 4), $value['smarttelecom'])) {
-                $val = 'Smart Telecom';
-            }
-        }
-        return $val;
-    }
-}
-
-if (!function_exists('search_prefix')) {
-    function search_prefix($data, $array, $flag_invert = 0)
-    {
-        $found = [];
-        foreach ($array as $key => $value) {
-            if (isset($flag_invert) && $flag_invert == 1) {
-                if (!preg_match($basis, $val)) {
-                    $found[] = $val;
-                }
-            } else {
-                if (preg_match($basis, $val)) {
-                    $found[] = $val;
-                }
-            }
-        }
-        return $found;
-    }
-}
-
-function arraySearch($array, $search)
-{
-    foreach ($array as $a) {
-        if (strstr($a, $search)) {
-            echo $a;
-        }
-    }
-    return false;
-}
 
 function antrian($id, $date)
 {

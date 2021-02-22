@@ -79,7 +79,7 @@
                         <table id="table"
                                 data-toolbar="#toolbar"
                                 data-toggle="table"
-                                data-url="/npd/approve/getDetail/<?= $permohonan->kode_pengajuan ?>"
+                                data-url="/sapa/approve/getDetail/<?= $permohonan->kode_pengajuan ?>"
                                 data-pagination="false"
                                 data-search="false"
                                 data-click-to-select="false"

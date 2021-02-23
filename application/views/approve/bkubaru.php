@@ -72,13 +72,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-control-label" for="example3cols1Input">Keterangan</label>
-                            <input type="text" name="keterangan" class="form-control form-control-sm" placeholder="ex: Fotocopy, Honor">
+                            <input type="text" name="keterangan" class="form-control form-control-sm" placeholder="ex: Fotocopy, Honor" readonly>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-control-label" for="example3cols3Input">Penerima</label>
-                            <input type="text" name="penerima" class="form-control form-control-sm" placeholder="ex: Toko anginribut, tn.xxx">
+                            <input type="text" name="penerima" class="form-control form-control-sm" placeholder="ex: Toko anginribut, tn.xxx" readonly>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -86,19 +86,19 @@
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example3cols2Input">Satuan</label>
-                                    <input type="text" name="satuan" class="form-control form-control-sm" placeholder="ex: dus, rim">
+                                    <input type="text" name="satuan" class="form-control form-control-sm" placeholder="ex: dus, rim" readonly>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example3cols2Input">Harga</label>
-                                    <input type="text" name="harga" class="form-control form-control-sm uang" placeholder="ex: 500000">
+                                    <input type="text" name="harga" class="form-control form-control-sm uang" placeholder="ex: 500000" readonly>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example3cols2Input">Total</label>
-                                    <input type="text" name="total" class="form-control form-control-sm" placeholder="ex: 10, 20">
+                                    <input type="text" name="total" class="form-control form-control-sm" placeholder="ex: 10, 20" readonly>
                                 </div>
                             </div>
                         </div>
@@ -107,12 +107,12 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="form-control-label" for="example4cols2Input">Subtotal</label>
+                            <label class="form-control-label" for="example4cols2Input">Jumlah Yang Diterima</label>
                             <div class="input-group input-group-merge">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-wallet fa-lg"></i></span>
                                 </div>
-                                <input id="subtotal" name="subtotal" type="text" class="form-control form-control-sm uang" placeholder="Sub Total" readonly>
+                                <input id="subtotal" name="subtotal" type="text" class="form-control form-control-sm uang" placeholder="Jumlah Yang Diterima" readonly>
                             </div>
                         </div>
                     </div>
@@ -121,31 +121,31 @@
                             <div class="col-md-6 col-lg-3">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example4cols2Input">Pph 21</label>
-                                    <input type="text" name="pph21" class="form-control form-control-sm uang" name="jumlah" placeholder="PPH21">
+                                    <input type="text" name="pph21" class="form-control form-control-sm uang" name="jumlah" placeholder="PPH21" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-2">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example4cols2Input">Pph 22</label>
-                                    <input type="text" name="pph22" class="form-control form-control-sm uang" name="jumlah" placeholder="PPH22">
+                                    <input type="text" name="pph22" class="form-control form-control-sm uang" name="jumlah" placeholder="PPH22" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-2">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example4cols2Input">Pph 23</label>
-                                    <input type="text" name="pph23" class="form-control form-control-sm uang" name="jumlah" placeholder="PPH23">
+                                    <input type="text" name="pph23" class="form-control form-control-sm uang" name="jumlah" placeholder="PPH23" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-2">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example4cols2Input">Pphd</label>
-                                    <input type="text" name="pphd" class="form-control form-control-sm uang" name="jumlah" placeholder="PPHD">
+                                    <input type="text" name="pphd" class="form-control form-control-sm uang" name="jumlah" placeholder="PPHD" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-3">
                                 <div class="form-group">
                                     <label class="form-control-label" for="example4cols2Input">Ppn</label>
-                                    <input type="text" name="ppn" class="form-control form-control-sm uang" name="jumlah" placeholder="PPN">
+                                    <input type="text" name="ppn" class="form-control form-control-sm uang" name="jumlah" placeholder="PPN" readonly>
                                 </div>
                             </div>
                         </div>
@@ -171,6 +171,7 @@
                     </div>
                 </div>
                 <input type="text" name="kd_rekening" hidden>
+                <input type="text" name="id_pengajuan_rincian" hidden>
                 <input type="text" name="nm_rekening" hidden>
                 <input type="text" name="id_rekening" hidden>
                 <input type="text" name="kd_pengajuan" value="<?=$permohonan->kode_pengajuan?>" hidden>
@@ -194,19 +195,19 @@
                 <table id="table"
                         data-toolbar="#toolbar"
                         data-toggle="table"
-                        data-url="showbku?kode=<?=$permohonan->kode_pengajuan?>"
+                        data-url="/npd/approve/getDetail/<?=$permohonan->kode_pengajuan?>"
                         data-pagination="false"
                         data-search="false"
                         data-click-to-select="true"
                         data-group-by = "true"
-                        data-group-by-field = "nmRekening"
+                        data-group-by-field = "nama_rekening"
                         class="table table-bordered table-sm"
                         data-show-footer="true"
                         data-side-pagination="client">
                     <thead class="thead-light table-bordered text-center">
                         <tr>
                             <th data-checkbox="true" rowspan="2" data-valign="middle"></th>
-                            <th data-field="kdRekening" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Kode Rekening</th>
+                            <th data-field="kode_rekening" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Kode Rekening</th>
                             <!-- <th data-field="nmRekening" data-width="5" data-width-unit="%" >Nama Rekening</th> -->
                             <th data-field="keterangan" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Keterangan</th>
                             <th data-field="penerima" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Penerima</th>
@@ -287,10 +288,16 @@
                 let res = data.map((d) => {
                     return {
                         id: d._id,
-                        text: `(${d.kode_rekening}) - ${d.nama_rekening}   (${uang.format(parseInt(d.jumlah,10))})`,
+                        text: `(${d.kode_rekening}) - ${d.nama_rekening} - ${d.keterangan} - (${uang.format(parseInt(d.jumlah,10))})`,
                         kd: d.kode_rekening,
                         nm: d.nama_rekening,
-                        idRek: d.id_rekening
+                        idRek: d.id_rekening,
+                        ket: d.keterangan,
+                        harga: d.harga,
+                        jumlah: d.jumlah,
+                        satuan: d.satuan,
+                        total: d.total,
+                        idRinci: d.rincian_id
                     }
                 })
                 $('#id_pengajuan').select2({
@@ -326,9 +333,18 @@
 } 
     $('#id_pengajuan').on('select2:closing', function(e) {
         let rekening = $('#id_pengajuan').select2('data')[0];
-        $('input[name=kd_rekening]').val(rekening.kd);
-        $('input[name=nm_rekening]').val(rekening.nm);
-        $('input[name=id_rekening]').val(rekening.idRek);
+        $('input[name=keterangan]').val(rekening.ket);
+        $('input[name=satuan]').val(rekening.satuan);
+        $('input[name=id_pengajuan_rincian]').val(rekening.idRinci);
+        $('input[name=harga]').val(new Intl.NumberFormat('ID-id').format(rekening.harga));
+        $('input[name=total]').val(rekening.total);
+        $('input[name=jumlah]').val(new Intl.NumberFormat('ID-id').format(rekening.jumlah));
+        $('input[name=penerima]').prop('readonly',false);
+        $('input[name=pph21]').prop('readonly',false);
+        $('input[name=pph22]').prop('readonly',false);
+        $('input[name=pph23]').prop('readonly',false);
+        $('input[name=pphd]').prop('readonly',false);
+        $('input[name=ppn]').prop('readonly',false);
     });
     // $('#ff').on('submit', function(e) {
     //     e.preventDefault();

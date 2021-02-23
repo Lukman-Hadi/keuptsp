@@ -39,7 +39,8 @@ class Approve extends CI_Controller {
         $nPermohonan = $this->uri->segment(3);
         $data['permohonan']= $this->tmodel->getPengajuan($nPermohonan)->row();
         $data['detail']= $this->tmodel->getDetail($nPermohonan)->result();
-        $data['title']  = 'PENGAJUAN NO'.$nPermohonan;
+        $data['title'] = 'PENGAJUAN NO'.$nPermohonan;
+        $data['approve'] = true;
         $data['collapsed'] = '';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';
@@ -50,7 +51,7 @@ class Approve extends CI_Controller {
         $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/form/form.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/pdfobject/pdfobject.min.js';
-        $this->template->load('template','approve/detail',$data);
+        $this->template->load('template','transaksi/detail',$data);
         // $this->output->set_content_type('application/json');
         // echo json_encode($this->tmodel->getDetailNew($nPermohonan)->result());
     }

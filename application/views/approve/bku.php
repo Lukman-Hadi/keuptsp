@@ -287,10 +287,15 @@
                 let res = data.map((d) => {
                     return {
                         id: d._id,
-                        text: `(${d.kode_rekening}) - ${d.nama_rekening}   (${uang.format(parseInt(d.jumlah,10))})`,
+                        text: `(${d.kode_rekening}) - ${d.nama_rekening} - ${keterangan} - (${uang.format(parseInt(d.jumlah,10))})`,
                         kd: d.kode_rekening,
                         nm: d.nama_rekening,
-                        idRek: d.id_rekening
+                        idRek: d.id_rekening,
+                        ket: d.keterangan,
+                        harga: d.harga,
+                        jumlah: d.jumlah,
+                        satuan: d.satuan,
+                        total: d.total
                     }
                 })
                 $('#id_pengajuan').select2({
@@ -326,9 +331,9 @@
 } 
     $('#id_pengajuan').on('select2:closing', function(e) {
         let rekening = $('#id_pengajuan').select2('data')[0];
-        $('input[name=kd_rekening]').val(rekening.kd);
-        $('input[name=nm_rekening]').val(rekening.nm);
-        $('input[name=id_rekening]').val(rekening.idRek);
+        console.log('e', rekening)
+        $('input[name=keterangan]').val(rekening.ket);
+        $('input[name=keterangan]').prop('readonly',true);
     });
     // $('#ff').on('submit', function(e) {
     //     e.preventDefault();

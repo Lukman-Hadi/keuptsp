@@ -134,10 +134,18 @@ class Approve_model extends CI_Model
         return $result;
     }
     function isRekeningRincian($kode){
-        $this->db->select('p.*, pr._id as rincian_id, keterangan,satuan,harga, pr.jumlah, r.kode_rekening,r.nama_rekening');
+        $this->db->select('p.*, pr._id as rincian_id, keterangan,satuan,harga,total, pr.jumlah, r.kode_rekening,r.nama_rekening');
         $this->db->from('tbl_pengajuan_detail p');
         $this->db->join('tbl_rekening_kegiatan r','p.id_rekening = r._id','LEFT');
         $this->db->join('tbl_pengajuan_rincian pr','pr.id_pengajuan_detail = p._id','LEFT');
+        $this->db->where('kode_pengajuan',$kode);
+        return $this->db->get();
+    }
+    function isRekeningRincianNew($kode){
+        $this->db->select('p.*, pr._id as rincian_id, keterangan,satuan,harga,total, pr.jumlah, r.kode_rekening,r.nama_rekening');
+        $this->db->from('tbl_pengajuan_rincian pr');
+        $this->db->join('tbl_pengajuan_detail p','p._id = pr.id_pengajuan_detail','LEFT');
+        $this->db->join('tbl_rekening_kegiatan r','p.id_rekening = r._id','LEFT');
         $this->db->where('kode_pengajuan',$kode);
         return $this->db->get();
     }

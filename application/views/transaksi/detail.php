@@ -1,3 +1,9 @@
+<?php if (isset($approve) && $approve) {
+    $cek = canApproveCheck();
+    if(!(in_array($permohonan->status,$cek))){
+        redirect(base_url());
+    };
+} ?>
 <div class="header bg-primary pb-6">
     <div class="container-fluid">
         <div class="header-body">
@@ -144,12 +150,12 @@
                             </tfoot>
                         </table>
                     </div>
-                    <hr>
+                    <br>
                     <div class="text-center">
-                    <p>Detail Pengajuan</p>
+                        <p>Detail Pengajuan</p>
                     </div>
                     <div class="table-responsive">
-                        <table id="table" data-toolbar="#toolbar" data-toggle="table" data-url="/sapa/approve/getDetail/<?= $permohonan->kode_pengajuan ?>" data-pagination="false" data-search="false" data-click-to-select="false" class="table table-flush" data-show-footer="true" data-group-by="true" data-group-by-field="nama_rekening" data-side-pagination="client">
+                        <table id="table" data-toolbar="#toolbar" data-toggle="table" data-url="/npd/approve/getDetail/<?= $permohonan->kode_pengajuan ?>" data-pagination="false" data-search="false" data-click-to-select="false" class="table table-flush" data-show-footer="true" data-group-by="true" data-group-by-field="nama_rekening" data-side-pagination="client">
                             <thead class="thead-light text-center" style="white-space: normal;word-wrap:break-word;">
                                 <tr>
                                     <!-- <th data-field="no" data-formatter="nomerFormatter" data-width="5" data-width-unit="%">No</th> -->
@@ -170,17 +176,96 @@
                             </thead>
                         </table>
                     </div>
+                    <br>
+                    <?php if (isset($approve) && $approve) {
+                        echo '<div class="row">';
+                        echo '<div class="col-12 col-sm-12 col-md-6"><button class="btn btn-primary btn-block" onclick="approve('.$permohonan->_id.')">Approve</button></div>';
+                        echo '<div class="col-12 col-sm-12 col-md-6"><button class="btn btn-danger btn-block"onclick="reject('.$permohonan->_id.')">Reject</button></div>';
+                        echo '</div>';
+                    } ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+	<div class="modal-dialog modal- modal-dialog-centered modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-body p-0">
+				<div class="card bg-secondary border-0 mb-0">
+					<div class="card-header bg-transparent p-0 m-0">
+						<div class="text-muted text-center mt-2 mb-3">Berikan Catatan</div>
+					</div>
+					<div class="card-body px-lg-5 py-lg-2">
+						<form id="ff" method="post" enctype="multipart/form-data" class="needs-validation">
+							<div class="form-group">
+								<input type="text" name="catatan" class="form-control" placeholder="Catatan">
+							</div>
+							<input id="id_pengajuan" type="text" name="id" class="form-control" placeholder="Catatan" hidden>
+							<div class="text-center">
+								<button type="submit" class="btn btn-info my-4"><span id="inrbtn"></span></button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
-const uang = new Intl.NumberFormat('ID-id', {
+    const uang = new Intl.NumberFormat('ID-id', {
         style: 'currency',
         currency: 'IDR'
     });
-function formatRupiah(val, row) {
+    function approve(id){
+        console.log('id', id)
+        $('#modal-form').modal('toggle');
+        $('#ff').trigger("reset");
+        $('#id_pengajuan').val(id);
+        $('#inrbtn').text('Approve');
+        url = '../approve/approve';
+    }
+    function reject(id) {
+        console.log('id', id)
+        $('#modal-form').modal('toggle');
+        $('#ff').trigger("reset");
+        $('#id_pengajuan').val(id);
+        $('#inrbtn').text('Reject');
+        url = '../approve/reject';
+    }
+    $('#ff').on('submit', function(e) {
+        e.preventDefault();
+        const string = $('#ff').serialize();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: string,
+            success: (result) => {
+                var result = eval('(' + result + ')');
+                console.log('result', result)
+                if (result.errorMsg) {
+                    Toast.fire({
+                        type: 'error',
+                        title: '' + result.errorMsg + '.'
+                    })
+                } else if (result.openMsg) {
+                    console.log('testttttt');
+                    $('#modal-form').modal('toggle');
+                    $('#modal-form-acc').modal('toggle');
+                } else {
+                    Toast.fire({
+                        type: 'success',
+                        title: '' + result.message + '.'
+                    })
+                    $('#modal-form').modal('toggle'); // close the dialog
+                    $('#table').bootstrapTable('refresh');
+                    window.location.replace('../../');
+                }
+            },
+        })
+    })
+
+    function formatRupiah(val, row) {
         console.log('row', val)
         return uang.format(val);
     };
@@ -195,4 +280,4 @@ function formatRupiah(val, row) {
         })
         return uang.format(sum);
     };
-    </script>
+</script>

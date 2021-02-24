@@ -61,6 +61,12 @@ class Approve extends CI_Controller {
         $this->output->set_content_type('application/json');
         echo json_encode($data);
     }
+    function getDetailBku(){
+        $nPermohonan = $this->uri->segment(3);
+        $data = $this->tmodel->getDetailBku($nPermohonan)->result();
+        $this->output->set_content_type('application/json');
+        echo json_encode($data);
+    }
     //insert to tbl-progress, update tbl pengajuan,
     function approve(){
         $idPengajuan    = $this->input->post('id');
@@ -133,7 +139,7 @@ class Approve extends CI_Controller {
     }
     function isRekening(){
         $kode = $this->input->get('kode');
-        $rekening = $this->amodel->isRekeningRincian($kode)->result();
+        $rekening = $this->amodel->isRekeningRincianNew($kode)->result();
         $data = array();
         // if($this->session->has_userdata('cartbku')){
         //     foreach($rekening as $d){
@@ -190,7 +196,7 @@ class Approve extends CI_Controller {
         }
         return -1;
     }
-    function addToCartBku(){
+    function addToCartBkuOld(){
         $idPengajuan    = $this->input->post('id_pengajuan_detail');
         $kdPengajuan    = $this->input->post('kd_pengajuan');
         $keterangan     = $this->input->post('keterangan');
@@ -241,6 +247,35 @@ class Approve extends CI_Controller {
         }
         echo json_encode(array('message'=>'Add Success'));
     }
+    function addToCartBku(){
+        $idPengajuan    = $this->input->post('id_pengajuan_rincian');
+        $penerima       = $this->input->post('penerima');
+        $pph21          = str_replace('.','',$this->input->post('pph21'));
+        $pph22          = str_replace('.','',$this->input->post('pph22'));
+        $pph23          = str_replace('.','',$this->input->post('pph23'));
+        $pphd           = str_replace('.','',$this->input->post('pphd'));
+        $ppn            = str_replace('.','',$this->input->post('ppn'));
+        $jumlah         = str_replace('.','',$this->input->post('jumlah'));
+        $subtotal       = $jumlah-($pph21+$pph22+$pph23+$pphd+$ppn);
+        $bukti          = $this->uploadBukti();
+        $data = array();
+        $data = array(
+            'penerima'=>$penerima,
+            'pph21'=>$pph21,
+            'pph22'=>$pph22,
+            'pph23'=>$pph23,
+            'pphd'=>$pphd,
+            'ppn'=>$ppn,
+            'subtotal'=>$subtotal,
+            'bukti'=>$bukti['file_name']
+        );
+        $result = $this->gmodel->update('tbl_pengajuan_rincian',$data,array('_id'=>$idPengajuan));
+        if($result){
+            echo json_encode(array('message'=>'Add Success'));
+        }else{
+            echo json_encode(array('errorMsg'=>'Whoops Something Went Wrong'));
+        }
+    }
 
     function uploadBukti(){
         $config['upload_path']          = './assets/bukti/';
@@ -279,6 +314,9 @@ class Approve extends CI_Controller {
         }
     }
     function saveBku(){
+        
+    }
+    function saveBkuOld(){
         $data = array();
         if($this->session->userdata('cartbku')){
             $cartbku = array_values(unserialize($this->session->userdata('cartbku')));

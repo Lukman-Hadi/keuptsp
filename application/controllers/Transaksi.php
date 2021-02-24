@@ -342,6 +342,7 @@ class Transaksi extends CI_Controller {
         $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/form/form.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/emodal/eModal.min.js';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/pdfobject/pdfobject.min.js';
         $this->template->load('template','transaksi/detail',$data);
     }

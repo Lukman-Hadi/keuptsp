@@ -155,6 +155,34 @@
                         <p>Detail Pengajuan</p>
                     </div>
                     <div class="table-responsive">
+                    <?php if(cekBku($permohonan->status)){?>
+                        <table id="table" data-toolbar="#toolbar" data-toggle="table" data-url="/npd/approve/getdetailbku/<?= $permohonan->kode_pengajuan ?>" data-pagination="false" data-single-select="true" data-search="false" data-click-to-select="true" data-group-by="true" data-group-by-field="nama_rekening" class="table table-bordered table-sm" data-show-footer="true" data-side-pagination="client">
+                            <thead class="thead-light table-bordered text-center">
+                                <tr>
+                                    <th data-checkbox="true" rowspan="2" data-valign="middle"></th>
+                                    <th data-field="kode_rekening" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Kode Rekening</th>
+                                    <!-- <th data-field="nmRekening" data-width="5" data-width-unit="%" >Nama Rekening</th> -->
+                                    <th data-field="keterangan" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Keterangan</th>
+                                    <th data-field="penerima" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Penerima</th>
+                                    <th colspan="3">Item Detail</th>
+                                    <th data-field="subtotal" rowspan="2" data-formatter="formatRupiah" data-valign="middle">Subtotal</th>
+                                    <th colspan="5">Pajak Detail</th>
+                                    <th data-field="jumlah" data-width="20" data-width-unit="%" data-formatter="formatRupiah" data-valign="middle" data-footer-formatter="footerJumlah" rowspan="2">Jumlah Pengajuan</th>
+                                    <th data-field="bukti" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2" data-formatter="buktiFormatter">Bukti</th>
+                                </tr>
+                                <tr>
+                                    <th data-field="satuan" data-width="5" data-width-unit="%">Satuan</th>
+                                    <th data-field="harga" data-width="50" data-width-unit="%" data-formatter="formatRupiah">Harga</th>
+                                    <th data-field="total" data-width="50" data-width-unit="%">Total</th>
+                                    <th data-field="pph21" data-width="50" data-width-unit="%" data-formatter="formatRupiah">Pph 21</th>
+                                    <th data-field="pph22" data-width="50" data-width-unit="%" data-formatter="formatRupiah">Pph 22</th>
+                                    <th data-field="pph23" data-width="50" data-width-unit="%" data-formatter="formatRupiah">Pph 23</th>
+                                    <th data-field="pphd" data-width="50" data-width-unit="%" data-formatter="formatRupiah">Pphd</th>
+                                    <th data-field="ppn" data-width="50" data-width-unit="%" data-formatter="formatRupiah">Ppn</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    <?php }else{?>
                         <table id="table" data-toolbar="#toolbar" data-toggle="table" data-url="/npd/approve/getDetail/<?= $permohonan->kode_pengajuan ?>" data-pagination="false" data-search="false" data-click-to-select="false" class="table table-flush" data-show-footer="true" data-group-by="true" data-group-by-field="nama_rekening" data-side-pagination="client">
                             <thead class="thead-light text-center" style="white-space: normal;word-wrap:break-word;">
                                 <tr>
@@ -175,6 +203,7 @@
                                 </tr>
                             </thead>
                         </table>
+                    <?php }?>
                     </div>
                     <br>
                     <?php if (isset($approve) && $approve) {
@@ -280,4 +309,14 @@
         })
         return uang.format(sum);
     };
+    function buktiFormatter(val, row) {
+        if (val) {
+            return `<button onclick="openpdf('${val}')" class="btn btn-info btn-sm py-0 m-0"><span class="btn-inner--icon"><i class="fa fa-eye"></i></span></button>`
+        } else {
+            return 'Belum Upload Bukti'
+        }
+    }
+    function openpdf(link) {
+        eModal.iframe('../../assets/bukti/' + link, 'Bukti');
+    }
 </script>

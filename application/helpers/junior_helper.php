@@ -184,6 +184,19 @@ function cekAlur($ord){
     return $ci->db->get()->row();
 }
 
+function cekBku($status){
+    $ci = get_instance();
+    $ci->db->select('ordinal');
+    $ci->db->from('tbl_alur');
+    $ci->db->where('status',1);
+    $ordinal = $ci->db->get()->row();
+    if($status >= $ordinal->ordinal){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 
 function seo_title($s)
 {

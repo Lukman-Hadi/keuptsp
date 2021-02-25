@@ -12,6 +12,9 @@
                     <h6 class="h2 text-white d-inline-block mb-0">Permohonan NPD No : <?= $permohonan->kode_pengajuan ?></h6><br>
                     <h6 class="h2 text-white d-inline-block mb-0">Status Pengajuan : <?= $permohonan->nama_progress ?></h6>
                 </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="<?= base_url() ?>transaksi/generatepdf?kode=<?= $permohonan->kode_pengajuan ?>" class="btn btn-secondary btn-lg btn-rounded">PRINT</a>
+                </div>
             </div>
         </div>
     </div>
@@ -159,15 +162,14 @@
                         <table id="table" data-toolbar="#toolbar" data-toggle="table" data-url="/npd/approve/getdetailbku/<?= $permohonan->kode_pengajuan ?>" data-pagination="false" data-single-select="true" data-search="false" data-click-to-select="true" data-group-by="true" data-group-by-field="nama_rekening" class="table table-bordered table-sm" data-show-footer="true" data-side-pagination="client">
                             <thead class="thead-light table-bordered text-center">
                                 <tr>
-                                    <th data-checkbox="true" rowspan="2" data-valign="middle"></th>
                                     <th data-field="kode_rekening" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Kode Rekening</th>
                                     <!-- <th data-field="nmRekening" data-width="5" data-width-unit="%" >Nama Rekening</th> -->
                                     <th data-field="keterangan" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Keterangan</th>
                                     <th data-field="penerima" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2">Penerima</th>
                                     <th colspan="3">Item Detail</th>
-                                    <th data-field="subtotal" rowspan="2" data-formatter="formatRupiah" data-valign="middle">Subtotal</th>
-                                    <th colspan="5">Pajak Detail</th>
                                     <th data-field="jumlah" data-width="20" data-width-unit="%" data-formatter="formatRupiah" data-valign="middle" data-footer-formatter="footerJumlah" rowspan="2">Jumlah Pengajuan</th>
+                                    <th colspan="5">Pajak Detail</th>
+                                    <th data-field="subtotal" rowspan="2" data-formatter="formatRupiah" data-valign="middle" data-footer-formatter="footerRupiah">Jumlah Yang Diterima</th>
                                     <th data-field="bukti" data-width="5" data-width-unit="%" data-valign="middle" rowspan="2" data-formatter="buktiFormatter">Bukti</th>
                                 </tr>
                                 <tr>
@@ -181,6 +183,12 @@
                                     <th data-field="ppn" data-width="50" data-width-unit="%" data-formatter="formatRupiah">Ppn</th>
                                 </tr>
                             </thead>
+                            <tfoot>
+                                <td colspan="6">Total</td>
+                                <td colspan="1"></td>
+                                <td colspan="5"></td>
+                                <td colspan="2"></td>
+                            </tfoot>
                         </table>
                     <?php }else{?>
                         <table id="table" data-toolbar="#toolbar" data-toggle="table" data-url="/npd/approve/getDetail/<?= $permohonan->kode_pengajuan ?>" data-pagination="false" data-search="false" data-click-to-select="false" class="table table-flush" data-show-footer="true" data-group-by="true" data-group-by-field="nama_rekening" data-side-pagination="client">
@@ -244,10 +252,10 @@
 <script>
     const uang = new Intl.NumberFormat('ID-id', {
         style: 'currency',
-        currency: 'IDR'
+        currency: 'IDR',
+        minimumFractionDigits: 0
     });
     function approve(id){
-        console.log('id', id)
         $('#modal-form').modal('toggle');
         $('#ff').trigger("reset");
         $('#id_pengajuan').val(id);
@@ -255,7 +263,6 @@
         url = '../approve/approve';
     }
     function reject(id) {
-        console.log('id', id)
         $('#modal-form').modal('toggle');
         $('#ff').trigger("reset");
         $('#id_pengajuan').val(id);
@@ -271,14 +278,12 @@
             data: string,
             success: (result) => {
                 var result = eval('(' + result + ')');
-                console.log('result', result)
                 if (result.errorMsg) {
                     Toast.fire({
                         type: 'error',
                         title: '' + result.errorMsg + '.'
                     })
                 } else if (result.openMsg) {
-                    console.log('testttttt');
                     $('#modal-form').modal('toggle');
                     $('#modal-form-acc').modal('toggle');
                 } else {
@@ -295,17 +300,24 @@
     })
 
     function formatRupiah(val, row) {
-        console.log('row', val)
         return uang.format(val);
     };
 
+    function footerRupiah(val, row){
+        let sum = 0;
+        val.map((e) => {
+            sum += parseInt(e.subtotal, 10);
+        })
+        return uang.format(sum);
+    }
+    function footerPajak(val, row){
+        console.log('{val, row}', {val, row})
+    }
+
     function footerJumlah(data, footerValue) {
-        console.log('data', data)
-        console.log('footerValue', footerValue)
         let sum = 0;
         data.map((e) => {
             sum += parseInt(e.jumlah, 10);
-            console.log('e.jumlah', e.jumlah)
         })
         return uang.format(sum);
     };

@@ -105,6 +105,12 @@
 		$('#id_pengajuan').val(id);
 		url='approve/approve';
 	}
+	function reject(id){
+		$('#modal-form').modal('toggle');
+		$('#ff').trigger("reset");
+		$('#id_pengajuan').val(id);
+		url='approve/reject';
+	}
 	$('#ff').on('submit', function (e) {
 	e.preventDefault();
 	const string = $('#ff').serialize();
@@ -162,7 +168,7 @@
         <div class="col-12 p-0 text-center">
         <div class="row d-flex justify-content-around">
             <button class="btn btn-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Approve" onclick="approve('${row._id}')"><span class="btn-inner--icon"><i class="fa fa-check"></i></span></button>
-            <button class="btn btn-danger btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Tolak" onclick="tolak('${row._id}')"><span class="btn-inner--icon"><i class="fa fa-window-close"></i></span></button>
+            <button class="btn btn-danger btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Tolak" onclick="reject('${row._id}')"><span class="btn-inner--icon"><i class="fa fa-window-close"></i></span></button>
             <button class="btn btn-outline-primary btn-sm py-0 m-0" data-toggle="tooltip" data-placement="top" title="Track Pengajuan"><span class="btn-inner--icon"><i class="fa fa-poll"></i></span></button>
             <button class="btn btn-success btn-sm py-0 m-0 pengajuan" title="Lihat Pengajuan" onclick="detail('${row.kode_pengajuan}')"><span class="btn-inner--icon"><i class="fa fa-eye"></i></span></button>
         </div>

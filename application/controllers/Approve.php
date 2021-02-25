@@ -108,7 +108,12 @@ class Approve extends CI_Controller {
         $note           = $this->input->post('catatan');
         $idUser         = $this->session->_id;
         $old            = $this->db->get_where('tbl_pengajuan',array('_id'=>$idPengajuan))->row();
-        $status         = $old->status-1;
+        $spj            = $this->db->get_where('tbl_alur',array('status'=>1))->row()->ordinal;
+        if($old->status <= $spj){
+            $status = 0;
+        }else{
+            $status = $spj;
+        }
         $result         = $this->gmodel->update('tbl_pengajuan',array('status'=>$status),array('_id'=>$idPengajuan));
         if($result){
             $result     = $this->gmodel->insert('tbl_progress_pengajuan',array('id_pengajuan'=>$idPengajuan,'ordinal'=>$status,'id_user'=>$idUser,'catatan'=>$note));

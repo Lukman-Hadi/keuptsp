@@ -392,7 +392,22 @@ class Transaksi extends CI_Controller {
         $id = $this->input->get('id');
         $this->output->set_content_type('application/json');
         $data = $this->rmodel->getIsRekening($id)->result();
-        echo json_encode($data);
+        $mod = array();
+        foreach($data as $d){
+            $jumlah = $this->rmodel->getAkumulasi($d->_id)->row()->jumlah;
+            // echo json_encode($jumlah);
+            $mod[] = array(
+                '_id'=>$d->_id,
+                'kode_rekening'=>$d->kode_rekening,
+                'nama_rekening'=>$d->nama_rekening,
+                'id_sub'=>$d->id_sub,
+                'id_program'=>$d->id_program,
+                'id_kegiatan'=>$d->id_kegiatan,
+                'status'=>$d->status,
+                'pagu'=>intval($d->pagu,10) - intval($jumlah,10),
+            );
+        }
+        echo json_encode($mod);
     }
     function pencairan(){
         $data['title']  = 'DATA PENCAIRAN';     
@@ -400,15 +415,14 @@ class Transaksi extends CI_Controller {
         $data['description']  = 'Berikut Adalah Data Pengajuan yang Sudah Dicairkan';
         $data['collapsed'] = '';
         $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
-        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2.min.css';
-        $data['css_files'][] = base_url() . 'assets/admin/vendor/select2/dist/css/select2-bootstrap.css';
         $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
-        $data['js_files'][] = base_url() . 'assets/admin/vendor/select2/dist/js/select2.min.js';
         $this->template->load('template','transaksi/pencairan',$data);
     }
 
     function showPencairan(){
-
+        $this->output->set_content_type('application/json');
+        $data = $this->tmodel->getPencairan();
+        echo json_encode($data);
     }
     function test(){
         $can = array();
@@ -427,5 +441,18 @@ class Transaksi extends CI_Controller {
     //input terbaru//
     function saveBaru(){
         
+    }
+
+    function generatePDF(){
+        $kode = $this->input->get('kode');
+        $data['permohonan']= $this->tmodel->getPengajuan($kode)->row();
+        $data['detail']= $this->tmodel->getDetail($kode)->result();
+        $data['title']  = 'PENGAJUAN NO'.$kode;
+        $data['collapsed'] = '';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.css';
+        $data['css_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.css';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/bootstrap-table.min.js';
+        $data['js_files'][] = base_url() . 'assets/admin/vendor/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.js';
+        $this->template->load('templateprint','print/detail',$data);
     }
 }

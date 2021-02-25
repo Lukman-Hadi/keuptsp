@@ -20,7 +20,7 @@ class Transaksi_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         if($this->input->get('search')){
             $this->db->group_start();
@@ -34,7 +34,7 @@ class Transaksi_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         if($this->input->get('search')){
             $this->db->group_start();
@@ -103,7 +103,7 @@ class Transaksi_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         $this->db->where('tp.kode_pengajuan',$nPermohonan);
         return $this->db->get();
@@ -114,5 +114,45 @@ class Transaksi_model extends CI_Model
         $this->db->order_by('ordinal','ASC');
         $this->db->limit(1,0);
         return $this->db->get()->row();
+    }
+    function getPencairan(){
+        $offset = $this->input->get('offset')!=null ? intval($this->input->get('offset')) : 0;
+        $limit = $this->input->get('limit')!=null ? intval($this->input->get('limit')) : 20;
+        $sort = $this->input->get('sort')!=null ? strval($this->input->get('sort')) : 'pr._id';
+        $order = $this->input->get('order')!=null ? strval($this->input->get('order')) : 'DESC';
+        $search = $this->input->get('search')!=null ? strval($this->input->get('search')) : '';
+        $this->db->select('pr.*, nama_user, nama_bidang');
+        $this->db->from('tbl_pencairan pr');
+        $this->db->join('tbl_pengajuan pj','pj._id = pr.id_pengajuan');
+        $this->db->join('tbl_users u','u._id = pj.id_user');
+        $this->db->join('tbl_bidang b','b._id = pj.id_bidang');
+        if($this->input->get('search')){
+            $this->db->group_start();
+            $this->db->like('pr.kode_pencairan',$search,'both');
+            $this->db->or_like('pr.kode_pengajuan',$search,'both');
+            $this->db->or_like('b.nama_bidang',$search,'both');
+            $this->db->or_like('u.nama_user',$search,'both');
+            $this->db->group_end();
+        }
+        $result['total'] = $this->db->get()->num_rows();
+        $this->db->select('pr.*, nama_user, nama_bidang, pj.created_at as tgl_pengajuan');
+        $this->db->from('tbl_pencairan pr');
+        $this->db->join('tbl_pengajuan pj','pj._id = pr.id_pengajuan');
+        $this->db->join('tbl_users u','u._id = pj.id_user');
+        $this->db->join('tbl_bidang b','b._id = pj.id_bidang');
+        if($this->input->get('search')){
+            $this->db->group_start();
+            $this->db->like('pr.kode_pencairan',$search,'both');
+            $this->db->or_like('pr.kode_pengajuan',$search,'both');
+            $this->db->or_like('b.nama_bidang',$search,'both');
+            $this->db->or_like('u.nama_user',$search,'both');
+            $this->db->group_end();
+        }
+        $this->db->order_by($sort,$order);
+        $this->db->limit($limit,$offset);
+        $query=$this->db->get();
+        $item = $query->result_array();    
+        $result = array_merge($result, ['rows' => $item]);
+        return $result;
     }
 }

@@ -31,7 +31,7 @@ class Approve_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         $this->db->where('tp.id_bidang',$bidang);
         $this->db->where_in('tp.status',$hak);
@@ -51,7 +51,7 @@ class Approve_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         $this->db->where('tp.id_bidang',$bidang);
         $this->db->where_in('tp.status',$hak);
@@ -68,7 +68,7 @@ class Approve_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         $this->db->where_in('tp.status',$hak);
         if($this->input->get('search')){
@@ -87,7 +87,7 @@ class Approve_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         $this->db->where_in('tp.status',$hak);
         $result = $this->db->get();
@@ -104,7 +104,7 @@ class Approve_model extends CI_Model
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
-        $this->db->join('tbl_alur al', 'al._id = tp.status','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
         $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         if($this->input->get('search')){
             $this->db->group_start();
@@ -115,10 +115,12 @@ class Approve_model extends CI_Model
         }
         $result['total'] = $this->db->get()->num_rows();
 
-        $this->db->select('tp.*,us.nama_user, bd.nama_bidang,(SELECT prg.nama_progress FROM tbl_progress_pengajuan AS tpp JOIN tbl_progress AS prg ON prg._id = tpp.id_progress WHERE tpp.id_pengajuan = tp._id ORDER BY tpp._id DESC LIMIT 1) AS status');
+        $this->db->select('tp.*,us.nama_user,bd.nama_bidang,nama_progress as status');
         $this->db->from('tbl_pengajuan tp');
         $this->db->join('tbl_users us', 'us._id = tp.id_user','LEFT');
         $this->db->join('tbl_bidang bd', 'bd._id = tp.id_bidang','LEFT');
+        $this->db->join('tbl_alur al', 'al.ordinal = tp.status','LEFT');
+        $this->db->join('tbl_progress prg', 'prg._id = al.id_progress','LEFT');
         if($this->input->get('search')){
             $this->db->group_start();
             $this->db->like('tp.kode_pengajuan',$search,'both');

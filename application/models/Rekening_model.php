@@ -62,4 +62,12 @@ class Rekening_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+    function getAkumulasi($id){
+        $this->db->select('pd.jumlah');
+        $this->db->from('tbl_pencairan pr');
+        $this->db->join('tbl_pengajuan pj','pj._id = pr.id_pengajuan','LEFT');
+        $this->db->join('tbl_pengajuan_detail pd','pd.kode_pengajuan = pj.kode_pengajuan','LEFT');
+        $this->db->where('pd.id_rekening',$id);
+        return $this->db->get();
+    }
 }

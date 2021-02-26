@@ -22,6 +22,7 @@ class Approve extends CI_Controller {
     function getApprove(){
         $idBidang   = $this->session->id_bidang;
         $userCanApprove = canApproveCheck();
+        // var_dump($userCanApprove);
         $who = superCheck();
         if($who){
             $result['total'] = $this->amodel->getApproveTotal($userCanApprove)->num_rows();

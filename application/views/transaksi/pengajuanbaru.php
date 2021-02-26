@@ -17,6 +17,16 @@
         <div class="card-body">
             <form id="ff" method="post" enctype="multipart/form-data">
                 <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-control-label" for="example3cols1Input">PPTK</label>
+                            <select id="pptk" name="id_pptk" class="form-control form-control-sm select2-single" required>
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-control-label" for="example3cols1Input">Program</label>
@@ -205,6 +215,25 @@
                 });
             }
         });
+        $.ajax({
+            url: 'transaksi/getpptk',
+            type: 'get',
+            dataType: 'json',
+            success: function(data) {
+                let res = data.map((d) => {
+                    return {
+                        id: d.idpptk,
+                        text: d.nama,
+                        nm: d.nama
+                    }
+                })
+                $('#pptk').select2({
+                    placeholder: "Pilih PPTK",
+                    allowClear: false,
+                    data: res
+                });
+            }
+        });
     });
 
     function showResponse(responseText, statusText, xhr, $form) {
@@ -219,6 +248,7 @@
             $("#kd_program").prop("disabled", true);
             $("#kd_kegiatan").prop("disabled", true);
             $("#kd_sub").prop("disabled", true);
+            $("#pptk").prop("disabled", true);
         }else{
             Toast.fire({
                 type: 'error',

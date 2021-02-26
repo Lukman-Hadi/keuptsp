@@ -112,7 +112,7 @@ class Transaksi_model extends CI_Model
         $this->db->select('*');
         $this->db->from('tbl_alur');
         $this->db->order_by('ordinal','ASC');
-        $this->db->limit(1,0);
+        $this->db->limit(1,1);
         return $this->db->get()->row();
     }
     function getPencairan(){
@@ -154,5 +154,12 @@ class Transaksi_model extends CI_Model
         $item = $query->result_array();    
         $result = array_merge($result, ['rows' => $item]);
         return $result;
+    }
+    function getPPTK($id){
+        $this->db->select('_id as idpptk, nama_user as nama');
+        $this->db->from('tbl_users');
+        $this->db->where('id_bidang',$id);
+        $this->db->where('id_jabatan',3);
+        return $this->db->get();
     }
 }

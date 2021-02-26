@@ -164,7 +164,7 @@ function canApproveCheck(){
     foreach($can as $c){
         $userCan[] = $c->_id;
     }
-    $canApprove = $ci->amodel->canApproveCheck($userCan);
+    $canApprove = $ci->amodel->canApproveCheckM($userCan);
     $userCanOrdinal = array();
     foreach($canApprove as $approve){
         $userCanOrdinal[] = $approve->ordinal-1;

@@ -9,7 +9,7 @@ class Approve_model extends CI_Model
     {
         parent::__construct();
     }
-    function canApproveCheck($idProgress){
+    function canApproveCheckM($idProgress){
         $this->db->select('ordinal');
         $this->db->from('tbl_alur');
         $this->db->where_in('id_progress',$idProgress);

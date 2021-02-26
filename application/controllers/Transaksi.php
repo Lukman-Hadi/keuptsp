@@ -90,6 +90,7 @@ class Transaksi extends CI_Controller {
         }
         $id             = uniqid();
         $idProgram      = $this->input->post('id_program')?$this->input->post('id_program'):$c[0]['id_program']; 
+        $idPPTK      = $this->input->post('id_pptk')?$this->input->post('id_pptk'):$c[0]['id_pptk']; 
         $idKegiatan     = $this->input->post('id_kegiatan')?$this->input->post('id_kegiatan'):$c[0]['id_kegiatan'];
         $idSub          = $this->input->post('id_sub')?$this->input->post('id_sub'):$c[0]['id_sub'];
         $idRekening     = $this->input->post('id_rekening');
@@ -110,6 +111,7 @@ class Transaksi extends CI_Controller {
         $data = array(
             '_id'               =>$id,
             'id_program'        =>$idProgram,
+            'id_pptk'           =>$idPPTK,
             'id_kegiatan'       =>$idKegiatan,
             'id_sub'            =>$idSub,
             'id_rekening'       =>$idRekening,
@@ -301,6 +303,7 @@ class Transaksi extends CI_Controller {
             }
             $pengajuan = array(
                 'kode_pengajuan'    => $kodePengajuan,
+                'id_pptk'           => $cart[0]['id_pptk'],
                 'total'             => $total,
                 'id_bidang'         => $this->session->id_bidang,
                 'id_user'           => $this->session->_id,
@@ -310,7 +313,7 @@ class Transaksi extends CI_Controller {
             if($resDetail){
                 $res = $this->db->insert('tbl_pengajuan',$pengajuan);
                 $resId = $this->db->insert_id();
-                // $this->session->unset_userdata('cart');
+                $this->session->unset_userdata('cart');
                 $dataProgress = array(
                     'id_pengajuan'  =>$resId,
                     'ordinal'       =>$status->id_progress,
@@ -394,7 +397,12 @@ class Transaksi extends CI_Controller {
         $data = $this->rmodel->getIsRekening($id)->result();
         $mod = array();
         foreach($data as $d){
-            $jumlah = $this->rmodel->getAkumulasi($d->_id)->row()->jumlah;
+            $jumlah = $this->rmodel->getAkumulasi($d->_id)->row();
+            if($jumlah > 0){
+                $jumlah = $this->rmodel->getAkumulasi($d->_id)->row()->jumlah;
+            }else{
+                $jumlah = 0;
+            }
             // echo json_encode($jumlah);
             $mod[] = array(
                 '_id'=>$d->_id,
@@ -422,6 +430,12 @@ class Transaksi extends CI_Controller {
     function showPencairan(){
         $this->output->set_content_type('application/json');
         $data = $this->tmodel->getPencairan();
+        echo json_encode($data);
+    }
+    function getPPTK(){
+        $this->output->set_content_type('application/json');
+        $bidang = $this->session->id_bidang;
+        $data = $this->tmodel->getPPTK($bidang)->result();
         echo json_encode($data);
     }
     function test(){
